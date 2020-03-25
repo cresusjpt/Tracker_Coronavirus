@@ -1,0 +1,57 @@
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory app:title="@string/sync_header">
+
+        <SwitchPreferenceCompat
+            android:key="pref_key_check"
+            android:summary="@string/sync_title"
+            android:title="@string/enable_notification"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/data_source">
+
+        <Preference
+            android:defaultValue="true"
+            android:dialogTitle="@string/hopkins"
+            android:key="@string/hopkins_link"
+            android:title="@string/hopkins" />
+
+        <Preference
+            android:defaultValue="true"
+            android:dialogTitle="@string/open_data"
+            android:key="@string/data_source_open"
+            android:title="@string/open_data" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="@string/others">
+
+        <Preference
+            android:defaultValue="true"
+            android:dialogTitle="@string/what_is"
+            android:key="@string/corona_virus_definition"
+            android:title="@string/what_is" />
+
+        <Preference
+            android:defaultValue="true"
+            android:dialogTitle="@string/covid_prevent"
+            android:key="@string/coronavirus_prevention"
+            android:title="@string/covid_prevent" />
+
+        <Preference
+            android:defaultValue="true"
+            android:dialogTitle="@string/change_language"
+            android:key="@string/change_language"
+            android:title="@string/change_language" />
+
+        <Preference
+            android:defaultValue="true"
+            android:dialogTitle="@string/about"
+            android:key="@string/about"
+            android:title="@string/about" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

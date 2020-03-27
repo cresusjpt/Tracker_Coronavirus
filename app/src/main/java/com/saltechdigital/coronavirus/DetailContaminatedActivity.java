@@ -13,37 +13,25 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.github.twocoffeesoneteam.glidetovectoryou.GlideToVectorYou;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.TileOverlay;
-import com.google.android.gms.maps.model.TileOverlayOptions;
-import com.google.maps.android.heatmaps.HeatmapTileProvider;
-import com.google.maps.android.heatmaps.WeightedLatLng;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.helper.DateAsXAxisLabelFormatter;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 import com.saltechdigital.coronavirus.models.ContaminatedCountry;
-import com.saltechdigital.coronavirus.models.HeatMapCountry;
 import com.saltechdigital.coronavirus.network.Tracker;
 import com.saltechdigital.coronavirus.network.TrackerService;
 import com.saltechdigital.coronavirus.utils.CSVParser;
-import com.saltechdigital.coronavirus.utils.Utils;
 
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.TimeZone;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -54,12 +42,10 @@ import static com.saltechdigital.coronavirus.adapter.CountryListAdapter.EXTRA_CO
 
 public class DetailContaminatedActivity extends AppCompatActivity {
 
-    private Intent intent;
     private LinearLayout line;
     private Tracker tracker;
     private ImageView imageView;
     public ContaminatedCountry contaminatedCountry;
-    private TextView infected, death, recovered;
     private GraphView recoveredGraph, deathGraph, infectedGraph;
 
     @Override
@@ -68,9 +54,10 @@ public class DetailContaminatedActivity extends AppCompatActivity {
         setContentView(R.layout.fragment_first);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
         tracker = TrackerService.createService(Tracker.SERIE_CONFIRMED_ENDPOINT, this);
 
-        intent = getIntent();
+        Intent intent = getIntent();
         contaminatedCountry = new ContaminatedCountry();
         contaminatedCountry = intent.getParcelableExtra(EXTRA_CONTAMINED);
 
@@ -96,9 +83,9 @@ public class DetailContaminatedActivity extends AppCompatActivity {
     private void findById() {
         line = findViewById(R.id.line);
         imageView = findViewById(R.id.image);
-        infected = findViewById(R.id.tv_infected);
-        death = findViewById(R.id.tv_death);
-        recovered = findViewById(R.id.tv_recovered);
+        TextView infected = findViewById(R.id.tv_infected);
+        TextView death = findViewById(R.id.tv_death);
+        TextView recovered = findViewById(R.id.tv_recovered);
 
         infected.setText(String.valueOf(contaminatedCountry.getInfection()));
         death.setText(String.valueOf(contaminatedCountry.getDeath()));
@@ -145,6 +132,7 @@ public class DetailContaminatedActivity extends AppCompatActivity {
                         if (csv.size() > 0) {
                             String[] header_row = (String[]) csv.get(0);
                             LineGraphSeries<DataPoint> seriere = new LineGraphSeries<>();
+                            DataPoint[] points = new DataPoint[csv.size()];
                             for (int j = 1; j < csv.size(); j++) {
                                 String[] data = (String[]) csv.get(j);
                                 if (data[1].equals(translatedName)) {
@@ -164,7 +152,8 @@ public class DetailContaminatedActivity extends AppCompatActivity {
 
                                             if (parsedDate != null && ntry.getHealing() != 0) {
                                                 DataPoint point = new DataPoint(parsedDate, ntry.getHealing());
-                                                seriere.appendData(point, false, 10000);
+                                                points[j-1] = point;
+                                                seriere.appendData(point, false, csv.size());
                                                 seriere.setColor(getColor(R.color.colorRecover));
                                                 seriere.setTitle(getString(R.string.heal));
                                             }

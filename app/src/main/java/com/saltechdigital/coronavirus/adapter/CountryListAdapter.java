@@ -56,8 +56,8 @@ public class CountryListAdapter extends RecyclerView.Adapter<CountryListAdapter.
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         ContaminatedCountry country = contaminatedCountriesFiltered.get(position);
+
         //set background click ressoure
-        //holder.itemView.setBackgroundResource(R.drawable.state_list);
         holder.display(country);
         setAnimation(holder.itemView);
     }

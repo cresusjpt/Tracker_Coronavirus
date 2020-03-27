@@ -94,17 +94,10 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-
-        if (country != null) {
-            outState.putParcelable("COUNTRY_DATA", country);
-            outState.putParcelableArrayList("HEATMAP", heatMapCountries);
-            outState.putParcelableArrayList("LATLNGLIST", latLngList);
-        }
     }
 
     private void initBottomSheet() {
         bottomSheetBehavior = BottomSheetBehavior.from(bottomLinear);
-
         bottomSheetBehavior.addBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
@@ -116,6 +109,14 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
                     case BottomSheetBehavior.STATE_COLLAPSED:
                         if (country != null)
                             pull.setText(getString(R.string.pull_me_up));
+                        break;
+                    case BottomSheetBehavior.STATE_DRAGGING:
+                        break;
+                    case BottomSheetBehavior.STATE_HALF_EXPANDED:
+                        break;
+                    case BottomSheetBehavior.STATE_HIDDEN:
+                        break;
+                    case BottomSheetBehavior.STATE_SETTLING:
                         break;
                 }
             }
@@ -221,6 +222,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
                     try {
                         assert response.body() != null;
                         message = response.body().string();
+                        //Log.d("JEANPAUL", "TAGE: "+message);
 
                         File outputDir = context.getCacheDir();
                         File outputFile = File.createTempFile(finalYesterday, "json", outputDir);
@@ -237,15 +239,15 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
                             heatMapCountries = new ArrayList<>();
                             for (int j = 1; j < csv.size(); j++) {
                                 String[] data = (String[]) csv.get(j);
-                                //Province/State,Country/Region,Last Update,Confirmed,Deaths,Recovered,Latitude,Longitude
+                                //FIPS 0,Admin2 1,Province_State 2,Country_Region 3,Last_Update 4,Lat 5,Long_ 6,Confirmed 7,Deaths 8,Recovered 9,Active 10,Combined_Key
                                 HeatMapCountry heatMapCountry = new HeatMapCountry();
-                                heatMapCountry.setStateName(data[0]);
-                                heatMapCountry.setCountryName(data[1]);
-                                heatMapCountry.setLastUpdate(data[2]);
-                                heatMapCountry.setConfirmed(Integer.parseInt(data[3]));
-                                heatMapCountry.setDeaths(Integer.parseInt(data[4]));
-                                heatMapCountry.setRecovered(Integer.parseInt(data[5]));
-                                LatLng latLng = new LatLng(Double.parseDouble(data[6]), Double.parseDouble(data[7]));
+                                heatMapCountry.setStateName(data[2]);
+                                heatMapCountry.setCountryName(data[3]);
+                                heatMapCountry.setLastUpdate(data[4]);
+                                heatMapCountry.setConfirmed(Integer.parseInt(data[7]));
+                                heatMapCountry.setDeaths(Integer.parseInt(data[8]));
+                                heatMapCountry.setRecovered(Integer.parseInt(data[9]));
+                                LatLng latLng = new LatLng(Double.parseDouble(data[5]), Double.parseDouble(data[6]));
                                 heatMapCountry.setLatLng(latLng);
                                 latLngList.add(latLng);
                                 heatMapCountries.add(heatMapCountry);
@@ -266,7 +268,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
                                     WeightedLatLng wl = new WeightedLatLng(latLng, 100d);
                                     weightedLatLng.add(wl);
                                 }
-
                             }
                             Log.d("JEANPAUL", "latlnglist size: " + latLngList.size());
                             provider = new HeatmapTileProvider

@@ -15,4 +15,4 @@ It's developed using android and some plugins such as [GraphView](https://github
 
 |First Page|Select Page|Country without Charts|Country with Charts|
 |:------------:|:------------:|:-------------:|:-------------:|
-![First Screen](/assets/Screenshots/iOSVertical/iPhone%20Xs%201.png)|![Select Page](/assets/Screenshots/iOSVertical/iPhone%20Xs%202.png)|![Country without Charts](/assets/Screenshots/iOSVertical/iPhone%20Xs%203.png)|![Country with Charts](/assets/Screenshots/iOSVertical/iPhone%20Xs%204.png)|
+![First Screen](https://github.com/cresusjpt/Tracker_Coronavirus/blob/master/app/src/main/res/raw/Tracker_1.jpg)|![Select Page](https://github.com/cresusjpt/Tracker_Coronavirus/blob/master/app/src/main/res/raw/Tracker_2.jpg)|![Country without Charts](https://github.com/cresusjpt/Tracker_Coronavirus/blob/master/app/src/main/res/raw/Tracker_3.jpg)|![Country with Charts](https://github.com/cresusjpt/Tracker_Coronavirus/blob/master/app/src/main/res/raw/Tracker_4.jpg)|

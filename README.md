@@ -15,7 +15,7 @@ It's developed using android and some plugins such as [GraphView](https://github
 
 |Impact seen on the world map|List of contaminated countries|Detail by country with charts|Settings|
 |:------------:|:------------:|:-------------:|:-------------:|
-![First Screen](https://github.com/cresusjpt/Tracker_Coronavirus/blob/master/app/src/main/res/raw/Tracker_1.jpg)|![Select Page](https://github.com/cresusjpt/Tracker_Coronavirus/blob/master/app/src/main/res/raw/Tracker_2.jpg)|![Country without Charts](https://github.com/cresusjpt/Tracker_Coronavirus/blob/master/app/src/main/res/raw/Tracker_3.jpg)|![Country with Charts](https://github.com/cresusjpt/Tracker_Coronavirus/blob/master/app/src/main/res/raw/Tracker_4.jpg)|
+![First Screen](https://github.com/cresusjpt/Tracker_Coronavirus/blob/master/app/src/main/res/raw/tracker_1.jpg)|![Select Page](https://github.com/cresusjpt/Tracker_Coronavirus/blob/master/app/src/main/res/raw/tracker_2.jpg)|![Country without Charts](https://github.com/cresusjpt/Tracker_Coronavirus/blob/master/app/src/main/res/raw/tracker_3.jpg)|![Country with Charts](https://github.com/cresusjpt/Tracker_Coronavirus/blob/master/app/src/main/res/raw/tracker_4.jpg)|
 
 ## Licence
 [![License: MIT](https://img.shields.io/badge/License-MIT-brightgreen.svg?label=license)](https://opensource.org/licenses/MIT)

@@ -1,4 +1,4 @@
-package com.saltechdigital.coronavirus.ui.home;
+package com.saltechdigital.coronavirus.views.monde;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -26,20 +26,22 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.TileOverlay;
 import com.google.android.gms.maps.model.TileOverlayOptions;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.maps.android.data.geojson.GeoJsonLayer;
 import com.google.maps.android.data.geojson.GeoJsonPolygonStyle;
+import com.google.maps.android.heatmaps.Gradient;
 import com.google.maps.android.heatmaps.HeatmapTileProvider;
 import com.google.maps.android.heatmaps.WeightedLatLng;
 import com.saltechdigital.coronavirus.MainActivity;
 import com.saltechdigital.coronavirus.R;
 import com.saltechdigital.coronavirus.models.ContaminatedCountry;
+import com.saltechdigital.coronavirus.factory.CountryFactory;
 import com.saltechdigital.coronavirus.models.HeatMapCountry;
 import com.saltechdigital.coronavirus.network.Tracker;
 import com.saltechdigital.coronavirus.network.TrackerService;
 import com.saltechdigital.coronavirus.utils.CSVParser;
+import com.saltechdigital.coronavirus.utils.Final;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -63,7 +65,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class HomeFragment extends Fragment implements OnMapReadyCallback {
+public class InWorldFragment extends Fragment implements OnMapReadyCallback {
 
     private GoogleMap mMap;
     private FragmentActivity fragmentActivity;
@@ -78,6 +80,19 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
     private ArrayList<LatLng> latLngList = null;
     private ArrayList<WeightedLatLng> weightedLatLng = null;
     private HeatmapTileProvider provider = null;
+
+    int[] colors = {
+            Color.GREEN,    // green(0-50)
+            Color.YELLOW,    // yellow(51-100)
+            Color.rgb(255,165,0), //Orange(101-150)
+            Color.RED,              //red(151-200)
+            Color.rgb(153,50,204), //dark orchid(201-300)
+            Color.rgb(165,42,42) //brown(301-500)
+    };
+
+    float[] startpoints = {
+            0.1F, 0.2F, 0.3F, 0.4F, 0.6F, 1.0F
+    };
 
     @Override
     public void onAttachFragment(@NonNull Fragment childFragment) {
@@ -135,18 +150,22 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
                 public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
                     if (response.isSuccessful()) {
                         try {
-                            Log.d("JEANPAUL", "onResponse: success");
+                            Log.d(Final.TAG, "onResponse: success");
                             String data = Objects.requireNonNull(response.body()).string();
                             JSONObject jsonObject = new JSONObject(data);
                             JSONArray jsonArray = jsonObject.getJSONArray("GlobalData");
                             JSONObject object = jsonArray.optJSONObject(0);
 
-                            country = new ContaminatedCountry();
+                            String name = object.optString("Date");
+                            String date = object.optString("Date");
+                            int infed = object.optInt("Infection");
+                            int dead = object.optInt("Deces");
+                            int recoved = object.optInt("Guerisons");
 
-                            country.setDate(object.optString("Date"));
-                            country.setInfection(object.optInt("Infection"));
-                            country.setDeath(object.optInt("Deces"));
-                            country.setHealing(object.optInt("Guerisons"));
+                            CountryFactory factory = new CountryFactory(name,date,infed,dead,recoved);
+
+                            country = (ContaminatedCountry) factory.getCountry(Final.CONTAMINATED);
+
                             country.setDeathRate(object.optDouble("TauxDeces"));
                             country.setHealingRate(object.optDouble("TauxGuerison"));
                             country.setInfectionRate(object.optDouble("TauxInfection"));
@@ -159,20 +178,18 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
                                 count.setText(getString(R.string.count_country, String.valueOf(MainActivity.contaminatedCountries.size())));
                             }
 
-                            List<ContaminatedCountry> countries = new ContaminatedCountry().populate(jsonArray);
+                            List<ContaminatedCountry> countries = ContaminatedCountry.populate(jsonArray);
                             MainActivity.jsonObject = jsonObject;
                             MainActivity.contaminatedCountries = countries;
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        } catch (IOException e) {
-                            e.printStackTrace();
+                        } catch (JSONException | IOException e) {
+                            Log.d(Final.TAG, "onResponse: ",e);
                         }
                     }
                 }
 
                 @Override
                 public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
-                    Log.e("JEANPAUL", "onFailure: " + t.getMessage(), t);
+                    Log.e(Final.TAG, "onFailure: " + t.getMessage(), t);
                 }
             });
         }
@@ -222,7 +239,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
                     try {
                         assert response.body() != null;
                         message = response.body().string();
-                        //Log.d("JEANPAUL", "TAGE: "+message);
+                        //Log.d(Final.TAG, "TAGE: "+message);
 
                         File outputDir = context.getCacheDir();
                         File outputFile = File.createTempFile(finalYesterday, "json", outputDir);
@@ -240,43 +257,44 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
                             for (int j = 1; j < csv.size(); j++) {
                                 String[] data = (String[]) csv.get(j);
                                 //FIPS 0,Admin2 1,Province_State 2,Country_Region 3,Last_Update 4,Lat 5,Long_ 6,Confirmed 7,Deaths 8,Recovered 9,Active 10,Combined_Key
-                                HeatMapCountry heatMapCountry = new HeatMapCountry();
+                                CountryFactory factory = new CountryFactory(data[3],data[4],Integer.parseInt(data[7]),Integer.parseInt(data[8]),Integer.parseInt(data[9]));
+
+                                HeatMapCountry heatMapCountry = (HeatMapCountry) factory.getCountry(Final.HEAT);
                                 heatMapCountry.setStateName(data[2]);
-                                heatMapCountry.setCountryName(data[3]);
-                                heatMapCountry.setLastUpdate(data[4]);
-                                heatMapCountry.setConfirmed(Integer.parseInt(data[7]));
-                                heatMapCountry.setDeaths(Integer.parseInt(data[8]));
-                                heatMapCountry.setRecovered(Integer.parseInt(data[9]));
                                 LatLng latLng = new LatLng(Double.parseDouble(data[5]), Double.parseDouble(data[6]));
                                 heatMapCountry.setLatLng(latLng);
                                 latLngList.add(latLng);
+                                //mMap.addMarker(new MarkerOptions().position(latLng).title(country.getName()));
                                 heatMapCountries.add(heatMapCountry);
-                                int death = heatMapCountry.getDeaths();
-                                if (death <= 25) {
-                                    WeightedLatLng wl = new WeightedLatLng(latLng, 2d);
+                                int infe = heatMapCountry.getConfirmed();
+                                if (infe <= 50) {
+                                    WeightedLatLng wl = new WeightedLatLng(latLng, 1.2d);
                                     weightedLatLng.add(wl);
-                                } else if (death <= 50) {
-                                    WeightedLatLng wl = new WeightedLatLng(latLng, 4d);
+                                } else if (infe <= 100) {
+                                    WeightedLatLng wl = new WeightedLatLng(latLng, 1.4d);
                                     weightedLatLng.add(wl);
-                                } else if (death <= 150) {
-                                    WeightedLatLng wl = new WeightedLatLng(latLng, 8d);
+                                } else if (infe <= 150) {
+                                    WeightedLatLng wl = new WeightedLatLng(latLng, 1.6d);
                                     weightedLatLng.add(wl);
-                                } else if (death <= 200) {
-                                    WeightedLatLng wl = new WeightedLatLng(latLng, 10d);
+                                } else if (infe <= 200) {
+                                    WeightedLatLng wl = new WeightedLatLng(latLng, 1.8d);
                                     weightedLatLng.add(wl);
-                                } else if (death <= 250) {
-                                    WeightedLatLng wl = new WeightedLatLng(latLng, 100d);
+                                } else if (infe <= 250) {
+                                    WeightedLatLng wl = new WeightedLatLng(latLng, 2);
                                     weightedLatLng.add(wl);
                                 }
                             }
-                            Log.d("JEANPAUL", "latlnglist size: " + latLngList.size());
+                            Log.d(Final.TAG, "latlnglist size: " + latLngList.size());
+                            Gradient gradient = new Gradient(colors,startpoints);
                             provider = new HeatmapTileProvider
                                     .Builder()
+                                    .data(latLngList)
                                     .weightedData(weightedLatLng)
+                                    .gradient(gradient)
                                     .radius(45)
                                     .build();
                             if (provider != null) {
-                                TileOverlay tileOverlay = mMap.addTileOverlay(new TileOverlayOptions().tileProvider(provider));
+                                /*TileOverlay tileOverlay =*/ mMap.addTileOverlay(new TileOverlayOptions().tileProvider(provider));
                             }
                         }
                     } catch (IOException e) {
@@ -286,8 +304,8 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Log.d("JEANPAUL", "onFailure:heatmap " + t.getMessage());
+            public void onFailure(@NonNull Call<ResponseBody> call,@NonNull Throwable t) {
+                Log.d(Final.TAG, "onFailure:heatmap " + t.getMessage());
             }
         });
     }
@@ -321,7 +339,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
             geoJsonLayer.addLayerToMap();
 
         } catch (IOException e) {
-            Log.d("JEANPAUL", "onMapReady: ", e);
+            Log.d(Final.TAG,"onMapReady: ", e);
             e.printStackTrace();
         } catch (JSONException e) {
             e.printStackTrace();
@@ -330,7 +348,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
             heatmap();
     }
 
-    public void zoomOnCountry() throws IOException {
+    private void zoomOnCountry() throws IOException {
         Geocoder geocoder = new Geocoder(getContext());
         List<Address> addresses;
         addresses = geocoder.getFromLocationName(MainActivity.COUNTRY, 1);

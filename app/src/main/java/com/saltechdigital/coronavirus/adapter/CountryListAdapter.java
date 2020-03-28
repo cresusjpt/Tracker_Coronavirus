@@ -15,9 +15,10 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.saltechdigital.coronavirus.DetailContaminatedActivity;
+import com.saltechdigital.coronavirus.views.detail.DetailContaminatedActivity;
 import com.saltechdigital.coronavirus.R;
 import com.saltechdigital.coronavirus.models.ContaminatedCountry;
+import com.saltechdigital.coronavirus.utils.Final;
 
 import java.text.MessageFormat;
 import java.text.Normalizer;
@@ -91,7 +92,7 @@ public class CountryListAdapter extends RecyclerView.Adapter<CountryListAdapter.
                         name = name.replaceAll("[^\\p{ASCII}]", "");
 
                         if (name.toLowerCase().contains(charString.toLowerCase())) {
-                            Log.d("JEANPAUL", "search: " + charString.toLowerCase() + " name : " + name);
+                            Log.d(Final.TAG, "search: " + charString.toLowerCase() + " name : " + name);
                             //Toast.makeText(context, "Find", Toast.LENGTH_SHORT).show();
                             filteredList.add(contamined);
                         }
@@ -107,7 +108,7 @@ public class CountryListAdapter extends RecyclerView.Adapter<CountryListAdapter.
 
             @Override
             protected void publishResults(CharSequence constraint, FilterResults results) {
-                Log.d("JEANPAUL", "publishResults: ");
+                Log.d(Final.TAG, "publishResults: ");
                 contaminatedCountriesFiltered = (List<ContaminatedCountry>) results.values;
                 notifyDataSetChanged();
             }

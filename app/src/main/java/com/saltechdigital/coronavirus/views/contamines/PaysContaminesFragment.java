@@ -1,4 +1,4 @@
-package com.saltechdigital.coronavirus.ui.dashboard;
+package com.saltechdigital.coronavirus.views.contamines;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -25,6 +25,7 @@ import com.saltechdigital.coronavirus.adapter.CountryListAdapter;
 import com.saltechdigital.coronavirus.models.ContaminatedCountry;
 import com.saltechdigital.coronavirus.network.Tracker;
 import com.saltechdigital.coronavirus.network.TrackerService;
+import com.saltechdigital.coronavirus.utils.Final;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -39,7 +40,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class DashboardFragment extends Fragment {
+public class PaysContaminesFragment extends Fragment {
 
     private Tracker tracker;
 
@@ -86,10 +87,10 @@ public class DashboardFragment extends Fragment {
                 if (response.isSuccessful()) {
                     try {
                         data = Objects.requireNonNull(response.body()).string();
-                        Log.d("JEANPAUL", "first data: "+data);
+                        Log.d(Final.TAG, "first data: "+data);
                         JSONObject jsonObject = new JSONObject(data);
                         JSONArray jsonArray = jsonObject.getJSONArray("PaysData");
-                        List<ContaminatedCountry> countries = new ContaminatedCountry().populate(jsonArray);
+                        List<ContaminatedCountry> countries = ContaminatedCountry.populate(jsonArray);
                         MainActivity.jsonObject = jsonObject;
                         MainActivity.contaminatedCountries = countries;
                         databind();
@@ -98,14 +99,14 @@ public class DashboardFragment extends Fragment {
                     }
                     swipeRefreshLayout.setRefreshing(false);
                 } else {
-                    Log.d("JEANPAUL", "error: " + response.errorBody());
+                    Log.d(Final.TAG, "error: " + response.errorBody());
                 }
                 swipeRefreshLayout.setRefreshing(false);
             }
 
             @Override
             public void onFailure(@NonNull Call<ResponseBody> call,@NonNull Throwable t) {
-                Log.e("JEANPAUL", "onFailure: " + t.getMessage(), t);
+                Log.e(Final.TAG, "onFailure: " + t.getMessage(), t);
                 Toast.makeText(getContext(), "UNE ERREUR", Toast.LENGTH_SHORT).show();
                 swipeRefreshLayout.setRefreshing(false);
             }
@@ -127,14 +128,14 @@ public class DashboardFragment extends Fragment {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                Log.d("JEANPAUL", "onQueryTextSubmit: ");
+                Log.d(Final.TAG,"onQueryTextSubmit: ");
                 adapter.getFilter().filter(query);
                 return true;
             }
 
             @Override
             public boolean onQueryTextChange(String s) {
-                Log.d("JEANPAUL", "onQueryTextChange: ");
+                Log.d(Final.TAG, "onQueryTextChange: ");
                 adapter.getFilter().filter(s);
                 return true;
             }

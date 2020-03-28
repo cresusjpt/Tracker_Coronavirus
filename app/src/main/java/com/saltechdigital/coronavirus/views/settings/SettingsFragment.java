@@ -1,4 +1,4 @@
-package com.saltechdigital.coronavirus.ui.notifications;
+package com.saltechdigital.coronavirus.views.settings;
 
 import android.app.AlertDialog;
 import android.content.Intent;
@@ -12,11 +12,11 @@ import androidx.preference.PreferenceManager;
 import androidx.preference.SwitchPreference;
 
 import com.saltechdigital.coronavirus.R;
-import com.saltechdigital.coronavirus.ui.webview.WebViewActivity;
+import com.saltechdigital.coronavirus.views.webview.WebViewActivity;
 
-import static com.saltechdigital.coronavirus.ui.webview.WebViewActivity.LOAD_URL;
+import static com.saltechdigital.coronavirus.views.webview.WebViewActivity.LOAD_URL;
 
-public class NotificationsFragment extends PreferenceFragmentCompat implements Preference.OnPreferenceChangeListener {
+public class SettingsFragment extends PreferenceFragmentCompat implements Preference.OnPreferenceChangeListener {
 
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {

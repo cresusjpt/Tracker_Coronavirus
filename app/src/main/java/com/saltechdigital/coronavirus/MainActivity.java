@@ -11,7 +11,6 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.saltechdigital.coronavirus.models.ContaminatedCountry;
-import com.saltechdigital.coronavirus.ui.home.HomeFragment;
 
 import org.json.JSONObject;
 
@@ -37,8 +36,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-
-        //getSupportFragmentManager().putFragment(outState,"homeFragment",homeFragment);
     }
 
     @Override

@@ -8,8 +8,7 @@ It's developed using android and some plugins such as [GraphView](https://github
   <li>[Open data] for the France regions and departments informations https://www.data.gouv.fr/fr/datasets/coronavirus-covid19-evolution-par-pays-et-dans-le-monde-maj-quotidienne/#_📈</li>
 </ul>
 
-[<img src="https://www.scottishchildrenslottery.com/export/system/modules/com.assense.gaming.stv.template/resources/images/google-play-store.svg" height="45" />](https://github.com/cresusjpt/Tracker_Coronavirus/blob/master/repo_files/app-release.apk?raw=true)<br>
-
+[<img src="https://www.scottishchildrenslottery.com/export/system/modules/com.assense.gaming.stv.template/resources/images/google-play-store.svg" height="45" />](https://github.com/cresusjpt/Tracker_Coronavirus/app/release/app-release.apk?raw=true)<br>
 ## Captures d'écrans
 
 |First Page|Select Page|Country without Charts|Country with Charts|

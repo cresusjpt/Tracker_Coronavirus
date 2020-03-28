@@ -76,6 +76,20 @@
                             android:textSize="16sp"
                             app:autoSizeMaxTextSize="20sp"
                             app:autoSizeMinTextSize="10sp" />
+
+                        <TextView
+                            android:id="@+id/tv_infected_rate"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:ellipsize="end"
+                            android:maxLines="1"
+                            android:minLines="1"
+                            android:textAlignment="center"
+                            android:textColor="#FF9800"
+                            android:textSize="16sp"
+                            android:layout_marginTop="15dp"
+                            app:autoSizeMaxTextSize="20sp"
+                            app:autoSizeMinTextSize="10sp" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -111,6 +125,20 @@
                             android:textSize="16sp"
                             app:autoSizeMaxTextSize="20sp"
                             app:autoSizeMinTextSize="10sp" />
+
+                        <TextView
+                            android:id="@+id/tv_death_rate"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:ellipsize="end"
+                            android:maxLines="1"
+                            android:minLines="1"
+                            android:textAlignment="center"
+                            android:textColor="#FF0000"
+                            android:textSize="16sp"
+                            android:layout_marginTop="15dp"
+                            app:autoSizeMaxTextSize="20sp"
+                            app:autoSizeMinTextSize="10sp" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -135,7 +163,21 @@
                             app:autoSizeMinTextSize="10sp" />
 
                         <TextView
-                            android:id="@+id/tv_recovered"
+                        android:id="@+id/tv_recovered"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:minLines="1"
+                        android:textAlignment="center"
+                        android:textColor="#20BE25"
+                        android:textSize="16sp"
+                        tools:text="3323"
+                        app:autoSizeMaxTextSize="20sp"
+                        app:autoSizeMinTextSize="10sp" />
+
+                        <TextView
+                            android:id="@+id/tv_recovered_rate"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:ellipsize="end"
@@ -144,6 +186,7 @@
                             android:textAlignment="center"
                             android:textColor="#20BE25"
                             android:textSize="16sp"
+                            android:layout_marginTop="15dp"
                             app:autoSizeMaxTextSize="20sp"
                             app:autoSizeMinTextSize="10sp" />
                     </LinearLayout>

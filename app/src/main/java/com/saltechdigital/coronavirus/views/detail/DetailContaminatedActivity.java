@@ -30,6 +30,7 @@ import com.saltechdigital.coronavirus.network.TrackerService;
 import com.saltechdigital.coronavirus.utils.Final;
 
 import java.io.IOException;
+import java.text.MessageFormat;
 import java.util.Locale;
 
 import okhttp3.ResponseBody;
@@ -102,14 +103,23 @@ public class DetailContaminatedActivity extends AppCompatActivity {
         line = findViewById(R.id.line);
         imageView = findViewById(R.id.image);
         TextView infected = findViewById(R.id.tv_infected);
+        TextView infectedRate = findViewById(R.id.tv_infected_rate);
         TextView death = findViewById(R.id.tv_death);
+        TextView deathRate = findViewById(R.id.tv_death_rate);
         TextView recovered = findViewById(R.id.tv_recovered);
-        infected.setText(String.valueOf(contaminatedCountry.getInfection()));
-        death.setText(String.valueOf(contaminatedCountry.getDeath()));
-        recovered.setText(String.valueOf(contaminatedCountry.getHealing()));
+        TextView recoveredRate = findViewById(R.id.tv_recovered_rate);
+
         recoveredGraph = findViewById(R.id.recover);
         deathGraph = findViewById(R.id.dea);
         infectedGraph = findViewById(R.id.infec);
+
+
+        infected.setText(MessageFormat.format("{0}%", String.valueOf(contaminatedCountry.getInfection())));
+        infectedRate.setText(MessageFormat.format("{0}%", String.valueOf(contaminatedCountry.getInfectionRate())));
+        death.setText(MessageFormat.format("{0}%", String.valueOf(contaminatedCountry.getDeath())));
+        deathRate.setText(MessageFormat.format("{0}%", String.valueOf(contaminatedCountry.getDeathRate())));
+        recovered.setText(MessageFormat.format("{0}%", String.valueOf(contaminatedCountry.getHealing())));
+        recoveredRate.setText(MessageFormat.format("{0}%", String.valueOf(contaminatedCountry.getHealingRate())));
     }
 
     private void recovered() {

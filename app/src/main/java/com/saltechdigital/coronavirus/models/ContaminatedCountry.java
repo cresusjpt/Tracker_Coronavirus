@@ -6,6 +6,9 @@ import android.os.Parcelable;
 import android.util.Log;
 
 import com.saltechdigital.coronavirus.MainActivity;
+import com.saltechdigital.coronavirus.factory.Country;
+import com.saltechdigital.coronavirus.factory.CountryFactory;
+import com.saltechdigital.coronavirus.utils.Final;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -13,7 +16,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ContaminatedCountry implements Parcelable, Comparable<ContaminatedCountry> {
+public class ContaminatedCountry implements Country, Parcelable, Comparable<ContaminatedCountry>{
 
     private String name;
     private String date;
@@ -56,14 +59,10 @@ public class ContaminatedCountry implements Parcelable, Comparable<ContaminatedC
 
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject object = jsonArray.optJSONObject(i);
-            Log.d("JEANPAUL", "forStat: beurk");
+            Log.d(Final.TAG, "forStat: beurk");
             if (object.has("Pays") && object.optString("Pays").equals(country.getName())) {
-                ContaminatedCountry cc = new ContaminatedCountry();
-                country.setDate(object.optString("Date"));
-                country.setName(object.optString("Pays"));
-                country.setInfection(object.optInt("Infection"));
-                country.setDeath(object.optInt("Deces"));
-                country.setHealing(object.optInt("Guerisons"));
+                CountryFactory factory = new CountryFactory(object.optString("Pays"),object.optString("Date"),object.optInt("Infection"),object.optInt("Deces"),object.optInt("Guerisons"));
+                ContaminatedCountry cc = (ContaminatedCountry) factory.getCountry(Final.CONTAMINATED);
                 country.setDeathRate(object.optDouble("TauxDeces"));
                 country.setHealingRate(object.optDouble("TauxGuerison"));
                 country.setInfectionRate(object.optDouble("TauxInfection"));
@@ -74,29 +73,21 @@ public class ContaminatedCountry implements Parcelable, Comparable<ContaminatedC
         return countries;
     }
 
-    public List<ContaminatedCountry> populate(JSONArray jsonArray) {
+    public static List<ContaminatedCountry> populate(JSONArray jsonArray) {
         List<ContaminatedCountry> countries = new ArrayList<>();
         for (int i = 0; i < jsonArray.length(); i++) {
 
             JSONObject object = jsonArray.optJSONObject(i);
             if (object.has("Date") && object.optString("Date").contains(MainActivity.dataTodayDate)) {
-                ContaminatedCountry country = new ContaminatedCountry();
-                country.setDate(object.optString("Date"));
-                country.setName(object.optString("Pays"));
-                country.setInfection(object.optInt("Infection"));
-                country.setDeath(object.optInt("Deces"));
-                country.setHealing(object.optInt("Guerisons"));
+                CountryFactory factory = new CountryFactory(object.optString("Pays"),object.optString("Date"),object.optInt("Infection"),object.optInt("Deces"),object.optInt("Guerisons"));
+                ContaminatedCountry country = (ContaminatedCountry) factory.getCountry(Final.CONTAMINATED);
                 country.setDeathRate(object.optDouble("TauxDeces"));
                 country.setHealingRate(object.optDouble("TauxGuerison"));
                 country.setInfectionRate(object.optDouble("TauxInfection"));
                 countries.add(country);
             } else if (object.has("Date") && object.optString("Date").contains(MainActivity.dataYesterdayDate)) {
-                ContaminatedCountry country = new ContaminatedCountry();
-                country.setDate(object.optString("Date"));
-                country.setName(object.optString("Pays"));
-                country.setInfection(object.optInt("Infection"));
-                country.setDeath(object.optInt("Deces"));
-                country.setHealing(object.optInt("Guerisons"));
+                CountryFactory factory = new CountryFactory(object.optString("Pays"),object.optString("Date"),object.optInt("Infection"),object.optInt("Deces"),object.optInt("Guerisons"));
+                ContaminatedCountry country = (ContaminatedCountry) factory.getCountry(Final.CONTAMINATED);
                 country.setDeathRate(object.optDouble("TauxDeces"));
                 country.setHealingRate(object.optDouble("TauxGuerison"));
                 country.setInfectionRate(object.optDouble("TauxInfection"));
@@ -118,7 +109,8 @@ public class ContaminatedCountry implements Parcelable, Comparable<ContaminatedC
         return infection;
     }
 
-    public void setInfection(int infection) {
+    //only factory use set so we can make him private
+    private void setInfection(int infection) {
         this.infection = infection;
     }
 
@@ -126,7 +118,7 @@ public class ContaminatedCountry implements Parcelable, Comparable<ContaminatedC
         return death;
     }
 
-    public void setDeath(int death) {
+    private void setDeath(int death) {
         this.death = death;
     }
 
@@ -134,7 +126,7 @@ public class ContaminatedCountry implements Parcelable, Comparable<ContaminatedC
         return healing;
     }
 
-    public void setHealing(int healing) {
+    private void setHealing(int healing) {
         this.healing = healing;
     }
 
@@ -166,7 +158,7 @@ public class ContaminatedCountry implements Parcelable, Comparable<ContaminatedC
         return date;
     }
 
-    public void setDate(String date) {
+    private void setDate(String date) {
         this.date = date;
     }
 
@@ -190,5 +182,30 @@ public class ContaminatedCountry implements Parcelable, Comparable<ContaminatedC
     @Override
     public int compareTo(ContaminatedCountry o) {
         return this.infection > o.infection ? -1 : 1;
+    }
+
+    @Override
+    public void name(String name) {
+       this.setName(name);
+    }
+
+    @Override
+    public void date(String date) {
+        this.setDate(date);
+    }
+
+    @Override
+    public void infection(int i) {
+        this.setInfection(i);
+    }
+
+    @Override
+    public void death(int d) {
+        this.setDeath(d);
+    }
+
+    @Override
+    public void recoverd(int heal) {
+        this.setHealing(heal);
     }
 }

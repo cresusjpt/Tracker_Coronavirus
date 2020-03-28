@@ -1,7 +1,6 @@
-package com.saltechdigital.coronavirus.ui.dashboard;
+package com.saltechdigital.coronavirus.views.contamines;
 
 import android.app.Activity;
-import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,7 +15,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -27,6 +25,7 @@ import com.saltechdigital.coronavirus.adapter.CountryListAdapter;
 import com.saltechdigital.coronavirus.models.ContaminatedCountry;
 import com.saltechdigital.coronavirus.network.Tracker;
 import com.saltechdigital.coronavirus.network.TrackerService;
+import com.saltechdigital.coronavirus.utils.Final;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -41,13 +40,9 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class DashboardFragment extends Fragment {
+public class PaysContaminesFragment extends Fragment {
 
-    private DashboardViewModel dashboardViewModel;
     private Tracker tracker;
-    private TrackerService trackerService;
-    private Activity activity;
-    private Context context;
 
     private RecyclerView recyclerView;
     private SwipeRefreshLayout swipeRefreshLayout;
@@ -58,30 +53,22 @@ public class DashboardFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         setHasOptionsMenu(true);
-        dashboardViewModel =
-                ViewModelProviders.of(this).get(DashboardViewModel.class);
-        View root = inflater.inflate(R.layout.fragment_dashboard, container, false);
-        return root;
+        return inflater.inflate(R.layout.fragment_dashboard, container, false);
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        activity = getActivity();
-        context = getContext();
+        Activity activity = getActivity();
         tracker = TrackerService.createService(Tracker.ENDPOINT, getContext());
         assert activity != null;
         recyclerView = activity.findViewById(R.id.country_list);
         swipeRefreshLayout = activity.findViewById(R.id.swiperefresh);
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                refresh();
-            }
-        });
+        swipeRefreshLayout.setOnRefreshListener(this::refresh);
         refresh();
     }
 
+    //add the contaminated country into the list
     private void databind() {
         if (MainActivity.contaminatedCountries.size() != 0) {
             recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -90,37 +77,36 @@ public class DashboardFragment extends Fragment {
         }
     }
 
+    //action made where we refresh the country recyclerview
     private void refresh() {
         swipeRefreshLayout.setRefreshing(true);
         Call<ResponseBody> call = tracker.downloadFileWithFixedUrl();
         call.enqueue(new Callback<ResponseBody>() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+            public void onResponse(@NonNull  Call<ResponseBody> call,@NonNull Response<ResponseBody> response) {
                 if (response.isSuccessful()) {
                     try {
                         data = Objects.requireNonNull(response.body()).string();
-                        Log.d("JEANPAUL", "firsst data: "+data);
+                        Log.d(Final.TAG, "first data: "+data);
                         JSONObject jsonObject = new JSONObject(data);
                         JSONArray jsonArray = jsonObject.getJSONArray("PaysData");
-                        List<ContaminatedCountry> countries = new ContaminatedCountry().populate(jsonArray);
+                        List<ContaminatedCountry> countries = ContaminatedCountry.populate(jsonArray);
                         MainActivity.jsonObject = jsonObject;
                         MainActivity.contaminatedCountries = countries;
                         databind();
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    } catch (IOException e) {
+                    } catch (JSONException | IOException e) {
                         e.printStackTrace();
                     }
                     swipeRefreshLayout.setRefreshing(false);
                 } else {
-                    Log.d("JEANPAUL", "error: " + response.errorBody());
+                    Log.d(Final.TAG, "error: " + response.errorBody());
                 }
                 swipeRefreshLayout.setRefreshing(false);
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Log.e("JEANPAUL", "onFailure: " + t.getMessage(), t);
+            public void onFailure(@NonNull Call<ResponseBody> call,@NonNull Throwable t) {
+                Log.e(Final.TAG, "onFailure: " + t.getMessage(), t);
                 Toast.makeText(getContext(), "UNE ERREUR", Toast.LENGTH_SHORT).show();
                 swipeRefreshLayout.setRefreshing(false);
             }
@@ -130,7 +116,6 @@ public class DashboardFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.country_menu, menu);
-
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -138,20 +123,19 @@ public class DashboardFragment extends Fragment {
     public void onPrepareOptionsMenu(@NonNull Menu menu) {
         super.onPrepareOptionsMenu(menu);
         final MenuItem searchItem = menu.findItem(R.id.action_search);
-
         final SearchView searchView = (SearchView) searchItem.getActionView();
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                Log.d("JEANPAUL", "onQueryTextSubmit: ");
+                Log.d(Final.TAG,"onQueryTextSubmit: ");
                 adapter.getFilter().filter(query);
                 return true;
             }
 
             @Override
             public boolean onQueryTextChange(String s) {
-                Log.d("JEANPAUL", "onQueryTextChange: ");
+                Log.d(Final.TAG, "onQueryTextChange: ");
                 adapter.getFilter().filter(s);
                 return true;
             }
@@ -167,11 +151,9 @@ public class DashboardFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
-        switch (id) {
-            case R.id.action_filter:
-                if (adapter != null)
+        if (id == R.id.action_filter) {
+            if (adapter != null)
                 adapter.sort();
-                break;
         }
 
         return super.onOptionsItemSelected(item);

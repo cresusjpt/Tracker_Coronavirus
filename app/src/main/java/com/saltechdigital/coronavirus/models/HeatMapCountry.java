@@ -4,8 +4,9 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.saltechdigital.coronavirus.factory.Country;
 
-public class HeatMapCountry implements Parcelable {
+public class HeatMapCountry implements Country,Parcelable {
 
     private String stateName;
     private String countryName;
@@ -53,7 +54,8 @@ public class HeatMapCountry implements Parcelable {
         return countryName;
     }
 
-    public void setCountryName(String countryName) {
+    //only factory use the set method so we can make it private
+    private void setCountryName(String countryName) {
         this.countryName = countryName;
     }
 
@@ -61,7 +63,7 @@ public class HeatMapCountry implements Parcelable {
         return lastUpdate;
     }
 
-    public void setLastUpdate(String lastUpdate) {
+    private void setLastUpdate(String lastUpdate) {
         this.lastUpdate = lastUpdate;
     }
 
@@ -69,7 +71,7 @@ public class HeatMapCountry implements Parcelable {
         return confirmed;
     }
 
-    public void setConfirmed(int confirmed) {
+    private void setConfirmed(int confirmed) {
         this.confirmed = confirmed;
     }
 
@@ -77,7 +79,7 @@ public class HeatMapCountry implements Parcelable {
         return deaths;
     }
 
-    public void setDeaths(int deaths) {
+    private void setDeaths(int deaths) {
         this.deaths = deaths;
     }
 
@@ -85,7 +87,7 @@ public class HeatMapCountry implements Parcelable {
         return recovered;
     }
 
-    public void setRecovered(int recovered) {
+    private void setRecovered(int recovered) {
         this.recovered = recovered;
     }
 
@@ -111,5 +113,30 @@ public class HeatMapCountry implements Parcelable {
         dest.writeInt(deaths);
         dest.writeInt(recovered);
         dest.writeParcelable(latLng, flags);
+    }
+
+    @Override
+    public void name(String name) {
+        this.setCountryName(name);
+    }
+
+    @Override
+    public void date(String lastUpdate) {
+        this.setLastUpdate(lastUpdate);
+    }
+
+    @Override
+    public void infection(int i) {
+        this.setConfirmed(i);
+    }
+
+    @Override
+    public void death(int d) {
+        this.setDeaths(d);
+    }
+
+    @Override
+    public void recoverd(int heal) {
+        this.setRecovered(heal);
     }
 }

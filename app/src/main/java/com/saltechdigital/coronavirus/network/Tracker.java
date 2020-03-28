@@ -26,13 +26,14 @@ public interface Tracker {
     @GET("{dailyReport}.csv")
     Call<ResponseBody> dailyReports(@Path("dailyReport") String dailyDate);
 
-    @GET("time_series_19-covid-Confirmed.csv")
+
+    @GET("time_series_covid19_confirmed_global.csv")
     Call<ResponseBody> serieConfirmedReports();
 
-    @GET("time_series_19-covid-Deaths.csv")
+    @GET("time_series_covid19_deaths_global.csv")
     Call<ResponseBody> serieDeathReports();
 
-    @GET("time_series_19-covid-Recovered.csv")
+    @GET("time_series_covid19_recovered_global.csv")
     Call<ResponseBody> serieRecoveredReports();
 
     @Streaming

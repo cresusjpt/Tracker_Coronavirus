@@ -7,9 +7,8 @@ It's developed using android and some plugins such as [GraphView](https://github
   <li>[John Hopkins University] (https://github.com/CSSEGISandData/COVID-19) 📈</li>
   <li>[Open data] for the France regions and departments informations https://www.data.gouv.fr/fr/datasets/coronavirus-covid19-evolution-par-pays-et-dans-le-monde-maj-quotidienne/#_📈</li>
 </ul>
-All the data visualized in the app is taken from the jhu  [Worldometers](https://www.worldometers.info/coronavirus/) 📈<br><br>
 
-[<img src="https://www.scottishchildrenslottery.com/export/system/modules/com.assense.gaming.stv.template/resources/images/google-play-store.svg" height="45" />](https://github.com/GabrielTavernini/Covid19Stats/blob/master/repo_files/app-release.apk?raw=true)<br>
+[<img src="https://www.scottishchildrenslottery.com/export/system/modules/com.assense.gaming.stv.template/resources/images/google-play-store.svg" height="45" />](https://github.com/cresusjpt/Tracker_Coronavirus/blob/master/repo_files/app-release.apk?raw=true)<br>
 
 ## Captures d'écrans
 

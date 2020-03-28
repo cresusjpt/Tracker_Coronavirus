@@ -13,6 +13,6 @@ It's developed using android and some plugins such as [GraphView](https://github
 [<img src="https://images.frandroid.com/wp-content/uploads/2018/12/google-play-store-logo.jpg" height="45" />](https://play.google.com/store/apps/details?id=com.saltechdigital.coronavirus)<br>
 ## Screenshoots
 
-|First Page|List of contaminated countries|Country without Charts|Country with Charts|
+|Impact seen on the world map|List of contaminated countries|Detail by country with charts|Settings|
 |:------------:|:------------:|:-------------:|:-------------:|
 ![First Screen](https://github.com/cresusjpt/Tracker_Coronavirus/blob/master/app/src/main/res/raw/Tracker_1.jpg)|![Select Page](https://github.com/cresusjpt/Tracker_Coronavirus/blob/master/app/src/main/res/raw/Tracker_2.jpg)|![Country without Charts](https://github.com/cresusjpt/Tracker_Coronavirus/blob/master/app/src/main/res/raw/Tracker_3.jpg)|![Country with Charts](https://github.com/cresusjpt/Tracker_Coronavirus/blob/master/app/src/main/res/raw/Tracker_4.jpg)|

@@ -1,6 +1,6 @@
 # Coronavirus Tracker (Android App)
 It's a simple app to visualize charts and statistics about the current Covid-19 emergency. <br>
-It's developed using android and some plugins such as [LiquidPullToRefresh](https://github.com/aagarwal1012/Liquid-Pull-To-Refresh) and [FlCharts](https://github.com/imaNNeoFighT/fl_chart)<br>
+It's developed using android and some plugins such as [GraphView](https://github.com/jjoe64/GraphView)<br>
 
 <br>The data visualized in the app is taken from two source:
 <ul>

@@ -16,7 +16,12 @@ import com.saltechdigital.coronavirus.views.webview.WebViewActivity;
 
 import static com.saltechdigital.coronavirus.views.webview.WebViewActivity.LOAD_URL;
 
+/**
+ * Une activité parmaetres pour restituer les sources d'informations de l'application
+ * et fournir quelques liens pour les gestes barrieres et la prévention
+ */
 public class SettingsFragment extends PreferenceFragmentCompat implements Preference.OnPreferenceChangeListener {
+
 
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
@@ -66,6 +71,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
             dialog.show();
         }
 
+        //le clic sur des liens sera executé par l'activité WebViewActivity
         if (preference.getKey().equals(getString(R.string.corona_virus_definition))){
             Intent intent = new Intent(getContext(), WebViewActivity.class);
             intent.putExtra(LOAD_URL, getString(R.string.coronavirus_definition));

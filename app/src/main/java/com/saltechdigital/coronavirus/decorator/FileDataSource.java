@@ -14,13 +14,11 @@ import java.io.IOException;
 import java.util.List;
 
 public class FileDataSource implements DataSource {
-    private String source;
     private Context context;
 
-    public FileDataSource(Context context, String source) {
+    public FileDataSource(Context context) {
         super();
         this.context = context;
-        this.source = source;
     }
 
     @Override
@@ -38,7 +36,7 @@ public class FileDataSource implements DataSource {
     @Override
     public DataPoint[] readData() {
         try {
-            this.writeData(source);
+            this.writeData("source");
         } catch (IOException e) {
             Log.d(Final.TAG, "FileDataSource -> une erreur est survenue: ", e);
         }

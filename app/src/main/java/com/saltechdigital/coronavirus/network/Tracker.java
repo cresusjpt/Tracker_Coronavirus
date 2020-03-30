@@ -1,18 +1,18 @@
 package com.saltechdigital.coronavirus.network;
 
 
-import com.saltechdigital.coronavirus.models.POJO;
-
 import io.reactivex.Single;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
-import retrofit2.http.Body;
 import retrofit2.http.GET;
-import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.Streaming;
 
+/**
+ * interface permettant de faire les requêtes pour récuperer les différentes informations
+ * api utilisé : RETROFIT
+ */
 public interface Tracker {
 
    // String ENDPOINT = "http://10.0.2.2/deliver/web/api/";

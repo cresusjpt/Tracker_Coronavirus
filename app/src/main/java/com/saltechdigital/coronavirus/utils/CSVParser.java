@@ -14,6 +14,7 @@ import java.util.List;
 public class CSVParser {
     private Context context;
 
+    //Une classe écrites pour parser n'importe qu'elle type de fichier csv dans une liste en java
     public CSVParser(Context context) {
         this.context = context;
     }

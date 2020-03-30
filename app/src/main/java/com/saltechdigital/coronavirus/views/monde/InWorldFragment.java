@@ -111,6 +111,9 @@ public class InWorldFragment extends Fragment implements OnMapReadyCallback {
         super.onSaveInstanceState(outState);
     }
 
+    /**
+     * permet d'instancier le bottomsheet et de lui ajouter les textes qui lui sont destinés
+     */
     private void initBottomSheet() {
         bottomSheetBehavior = BottomSheetBehavior.from(bottomLinear);
         bottomSheetBehavior.addBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
@@ -143,6 +146,9 @@ public class InWorldFragment extends Fragment implements OnMapReadyCallback {
         });
 
         if (country == null) {
+            /*
+              on fait une requete pour aller chercher le nombre contaminations totale dans le monde entier
+             */
             tracker = TrackerService.createService(Tracker.ENDPOINT, getContext());
             Call<ResponseBody> call = tracker.downloadFileWithFixedUrl();
             call.enqueue(new Callback<ResponseBody>() {
@@ -156,12 +162,14 @@ public class InWorldFragment extends Fragment implements OnMapReadyCallback {
                             JSONArray jsonArray = jsonObject.getJSONArray("GlobalData");
                             JSONObject object = jsonArray.optJSONObject(0);
 
+                            //on parse les données depuis la source dans les classes appropriées
                             String name = object.optString("Date");
                             String date = object.optString("Date");
                             int infed = object.optInt("Infection");
                             int dead = object.optInt("Deces");
                             int recoved = object.optInt("Guerisons");
 
+                            //Utilisation du patron de conception factory
                             CountryFactory factory = new CountryFactory(name,date,infed,dead,recoved);
 
                             country = (ContaminatedCountry) factory.getCountry(Final.CONTAMINATED);
@@ -174,6 +182,7 @@ public class InWorldFragment extends Fragment implements OnMapReadyCallback {
                             infected.setText(String.valueOf(country.getInfection()));
                             death.setText(String.valueOf(country.getDeath()));
                             recovered.setText(String.valueOf(country.getHealing()));
+
                             if (MainActivity.contaminatedCountries.size() > 0) {
                                 count.setText(getString(R.string.count_country, String.valueOf(MainActivity.contaminatedCountries.size())));
                             }
@@ -219,6 +228,7 @@ public class InWorldFragment extends Fragment implements OnMapReadyCallback {
         initBottomSheet();
     }
 
+    //construction d'une couche de la carte de chaleur en fonction des contaminations de le monde entier
     private void heatmap() {
         final Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DATE, -1);

@@ -23,8 +23,13 @@ import java.util.Locale;
 import java.util.TimeZone;
 
 
+/**
+ * Nous avons utilisé des fragments
+ * ceci est la classe principale dans lequel les 3 premiers fragments seront appelés
+ */
 public class MainActivity extends AppCompatActivity {
 
+    //Nous n'avons pas utilisé de base de données localement donc une variable static stock certaines valeurs durant toute la durée de vie de l'application
     public static String COUNTRY = "FRANCE";
     public static JSONObject jsonObject = null;
     public static String data = null;

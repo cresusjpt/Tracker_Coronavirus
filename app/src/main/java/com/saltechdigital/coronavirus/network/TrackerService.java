@@ -33,8 +33,6 @@ public class TrackerService {
                 .connectTimeout(120, TimeUnit.SECONDS)
                 .addInterceptor(chain -> {
                     Request request = chain.request();
-
-                    //Request.Builder builder = request.newBuilder().header("Authorization", "Bearer " + token);
                     Request.Builder builder = request.newBuilder().header("Accept", "application/json");
                     Request newRequest = builder.build();
 
@@ -42,7 +40,6 @@ public class TrackerService {
                 }).addInterceptor(chain -> {
                     Request request = chain.request();
 
-                    //Request.Builder builder = request.newBuilder().header("Authorization", "Bearer " + token);
                     Request.Builder builder = request.newBuilder().header("Content-Type", "application/json; charset=utf-8");
                     Request newRequest = builder.build();
 
@@ -57,10 +54,6 @@ public class TrackerService {
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
-
-        /*
-        .header("Content-Type","application/json; charset=utf-8")
-         */
 
         return retrofit.create(Tracker.class);
     }

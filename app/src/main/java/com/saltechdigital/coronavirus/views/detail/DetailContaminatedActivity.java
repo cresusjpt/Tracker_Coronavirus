@@ -20,6 +20,7 @@ import com.jjoe64.graphview.helper.DateAsXAxisLabelFormatter;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 import com.saltechdigital.coronavirus.R;
+import com.saltechdigital.coronavirus.decorator.ConfirmedDataDecorator;
 import com.saltechdigital.coronavirus.decorator.DataSourceDecorator;
 import com.saltechdigital.coronavirus.decorator.DeathDataDecorator;
 import com.saltechdigital.coronavirus.decorator.FileDataSource;
@@ -74,9 +75,12 @@ public class DetailContaminatedActivity extends AppCompatActivity {
 
         tracker = TrackerService.createService(Tracker.SERIE_CONFIRMED_ENDPOINT, this);
 
+        //on recupere l'objet envoyé depuis l'intent de la précedente activité
         Intent intent = getIntent();
         contaminatedCountry = intent.getParcelableExtra(EXTRA_CONTAMINED);
 
+        //si l'on a pu bien récupére il faut changer le titre de la barre et trouver la correspondance de ce nom en anglais
+        //parce que pour réaliser les graphiques nous avons besoins de ce nom en anglais.
         if (contaminatedCountry != null) {
             setTitle(contaminatedCountry.getName());
             translateCountryName();
@@ -84,12 +88,15 @@ public class DetailContaminatedActivity extends AppCompatActivity {
 
 
         findById();
+        //les données sont dans certains cas comme la france et l'amérique dans un format non ascendant. ce qui ne nous permettait pas de réaliser correctement le graphique
+        //donc pour ces pays les méthodes des graphiques ne seront pas appelés
         if (!contaminatedCountry.getName().equals("France") && !contaminatedCountry.getName().equals("Chine") && !contaminatedCountry.getName().equals("Pays-Bas") && !contaminatedCountry.getName().equals("Royaume-Uni")) {
             confirmed();
             recovered();
             dead();
         }
 
+        //pour la france nous remplaçons les graphiques par une image représentants le nombres des cas par régions et par départements
         if (contaminatedCountry.getName().equals("France")) {
             String uri = "https://static.data.gouv.fr/resources/cas-confirmes-dinfection-au-covid-19-par-region/20200315-084505/covid19.svg";
             Uri u = Uri.parse(uri);
@@ -99,6 +106,8 @@ public class DetailContaminatedActivity extends AppCompatActivity {
         }
     }
 
+    //une permet qui permet d'inflater les view
+    //utiliser pour rendre moins longue la méthodes create
     private void findById() {
         line = findViewById(R.id.line);
         imageView = findViewById(R.id.image);
@@ -114,27 +123,32 @@ public class DetailContaminatedActivity extends AppCompatActivity {
         infectedGraph = findViewById(R.id.infec);
 
 
-        infected.setText(MessageFormat.format("{0}%", String.valueOf(contaminatedCountry.getInfection())));
+        infected.setText(MessageFormat.format("{0}", String.valueOf(contaminatedCountry.getInfection())));
         infectedRate.setText(MessageFormat.format("{0}%", String.valueOf(contaminatedCountry.getInfectionRate())));
-        death.setText(MessageFormat.format("{0}%", String.valueOf(contaminatedCountry.getDeath())));
+        death.setText(MessageFormat.format("{0}", String.valueOf(contaminatedCountry.getDeath())));
         deathRate.setText(MessageFormat.format("{0}%", String.valueOf(contaminatedCountry.getDeathRate())));
-        recovered.setText(MessageFormat.format("{0}%", String.valueOf(contaminatedCountry.getHealing())));
+        recovered.setText(MessageFormat.format("{0}", String.valueOf(contaminatedCountry.getHealing())));
         recoveredRate.setText(MessageFormat.format("{0}%", String.valueOf(contaminatedCountry.getHealingRate())));
     }
 
+    //permet de réaliser le graphique des guérris par pays
     private void recovered() {
+        //on fait un appel serveur vers l'api pour récuperer les informations
         Call<ResponseBody> call = tracker.serieRecoveredReports();
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
                 if (response.isSuccessful()) {
 
+                    //si la requete a réussie
                     Log.d(Final.TAG, "onResponse: " + translatedName);
                     try {
                         assert response.body() != null;
                         String message = response.body().string();
-                        DataSourceDecorator recoverData = new RecoverDataDecorator(new FileDataSource(context, message), context, translatedName);
+                        //on utilise ici le decorateur pour creer une source basique avec des comportements de recoverdata
+                        DataSourceDecorator recoverData = new RecoverDataDecorator(new FileDataSource(context), context, translatedName);
                         recoverData.writeData(message);
+                        //datapoint est un type de données renvoyé par le graphview
                         DataPoint[] points = recoverData.readData();
                         if (points != null) {
                             LineGraphSeries<DataPoint> seriere = new LineGraphSeries<>(points);
@@ -162,6 +176,8 @@ public class DetailContaminatedActivity extends AppCompatActivity {
         });
     }
 
+    //permet de réaliser le graphique des mort par pays
+    //sensiblement pareil que la précédente à part l'ajout du comportement particulier.
     private void dead() {
         Call<ResponseBody> call = tracker.serieDeathReports();
         call.enqueue(new Callback<ResponseBody>() {
@@ -172,7 +188,7 @@ public class DetailContaminatedActivity extends AppCompatActivity {
                     try {
                         assert response.body() != null;
                         String source = response.body().string();
-                        DataSourceDecorator deathData = new DeathDataDecorator(new FileDataSource(context, source), context, translatedName);
+                        DataSourceDecorator deathData = new DeathDataDecorator(new FileDataSource(context), context, translatedName);
                         deathData.writeData(source);
                         DataPoint[] points = deathData.readData();
                         if (points != null) {
@@ -203,7 +219,10 @@ public class DetailContaminatedActivity extends AppCompatActivity {
         });
     }
 
+    //permet de réaliser le graphique des infections par pays
+    //sensiblement pareil que la précédente à part l'ajout du comportement particulier.
     private void confirmed() {
+        //on fait un appel serveur vers l'api pour récuperer les informations
         Call<ResponseBody> call = tracker.serieConfirmedReports();
         call.enqueue(new Callback<ResponseBody>() {
             @Override
@@ -213,9 +232,9 @@ public class DetailContaminatedActivity extends AppCompatActivity {
                     try {
                         assert response.body() != null;
                         String source = response.body().string();
-                        DataSourceDecorator deathData = new DeathDataDecorator(new FileDataSource(context, source), context, translatedName);
-                        deathData.writeData(source);
-                        DataPoint[] points = deathData.readData();
+                        DataSourceDecorator confirmedData = new ConfirmedDataDecorator(new FileDataSource(context), context, translatedName);
+                        confirmedData.writeData(source);
+                        DataPoint[] points = confirmedData.readData();
                         if (points != null) {
                             LineGraphSeries<DataPoint> series = new LineGraphSeries<>(points);
                             series.setColor(getColor(R.color.colorInfect));

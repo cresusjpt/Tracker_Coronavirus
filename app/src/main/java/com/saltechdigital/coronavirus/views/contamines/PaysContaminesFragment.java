@@ -97,6 +97,7 @@ public class PaysContaminesFragment extends Fragment {
                     } catch (JSONException | IOException e) {
                         e.printStackTrace();
                     }
+                    //refresh the swipe refresh layout
                     swipeRefreshLayout.setRefreshing(false);
                 } else {
                     Log.d(Final.TAG, "error: " + response.errorBody());
@@ -125,17 +126,17 @@ public class PaysContaminesFragment extends Fragment {
         final MenuItem searchItem = menu.findItem(R.id.action_search);
         final SearchView searchView = (SearchView) searchItem.getActionView();
 
+        //search algorithm
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                Log.d(Final.TAG,"onQueryTextSubmit: ");
+                //la classe de l'adaptateur implémente l'interface filterable donc nous pouvons filtrer la liste suivant les caracteres saisis dans le champs de recherche par l'utilisateur
                 adapter.getFilter().filter(query);
                 return true;
             }
 
             @Override
             public boolean onQueryTextChange(String s) {
-                Log.d(Final.TAG, "onQueryTextChange: ");
                 adapter.getFilter().filter(s);
                 return true;
             }
@@ -153,6 +154,8 @@ public class PaysContaminesFragment extends Fragment {
         int id = item.getItemId();
         if (id == R.id.action_filter) {
             if (adapter != null)
+                //la classe country implement l'interface comparable
+                //qui nous permet de trier la liste suivant le nombre d'infections dans le pays
                 adapter.sort();
         }
 

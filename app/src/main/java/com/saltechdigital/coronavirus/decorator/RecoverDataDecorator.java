@@ -46,7 +46,7 @@ public class RecoverDataDecorator extends DataSourceDecorator {
                 if (data[1].equals(translatedName)) {
                     for (int i = 0; i < header_row.length; i++) {
                         if (i > 3) {
-                            Log.d(Final.TAG, "Pays : " + data[1] + " Ensuite" + header_row[i] + "onResponse: " + data[i]);
+                            //Log.d(Final.TAG, "Pays : " + data[1] + " Ensuite" + header_row[i] + "onResponse: " + data[i]);
 
                             String name = header_row[i];
 
@@ -62,16 +62,16 @@ public class RecoverDataDecorator extends DataSourceDecorator {
                                     pointList.add(point);
                                 }
                             } catch (ParseException e) {
-                                Log.d(Final.TAG, "readData: ", e);
+                                //Log.d(Final.TAG, "readData: ", e);
                             }
                         }
                     }
                 }
             }
         }
-        Log.d(Final.TAG, "pointlist: "+pointList.size());
+        //Log.d(Final.TAG, "pointlist: "+pointList.size());
         DataPoint[] points = pointList.toArray(new DataPoint[]{});
-        Log.d(Final.TAG, "readData: "+points.length);
+        //Log.d(Final.TAG, "readData: "+points.length);
         return points;
     }
 }

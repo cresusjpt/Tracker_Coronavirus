@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -28,7 +27,6 @@ import com.saltechdigital.coronavirus.decorator.RecoverDataDecorator;
 import com.saltechdigital.coronavirus.models.ContaminatedCountry;
 import com.saltechdigital.coronavirus.network.Tracker;
 import com.saltechdigital.coronavirus.network.TrackerService;
-import com.saltechdigital.coronavirus.utils.Final;
 
 import java.io.IOException;
 import java.text.MessageFormat;
@@ -49,6 +47,9 @@ public class DetailContaminatedActivity extends AppCompatActivity {
     public ContaminatedCountry contaminatedCountry;
     private GraphView recoveredGraph, deathGraph, infectedGraph;
     private Context context;
+
+
+    //private InterstitialAd interstitialAd;
 
     private String translatedName = "";
 
@@ -86,7 +87,6 @@ public class DetailContaminatedActivity extends AppCompatActivity {
             translateCountryName();
         }
 
-
         findById();
         //les données sont dans certains cas comme la france et l'amérique dans un format non ascendant. ce qui ne nous permettait pas de réaliser correctement le graphique
         //donc pour ces pays les méthodes des graphiques ne seront pas appelés
@@ -104,7 +104,40 @@ public class DetailContaminatedActivity extends AppCompatActivity {
             line.setVisibility(View.INVISIBLE);
             GlideToVectorYou.justLoadImage(this, u, imageView);
         }
+
+        /*interstitialAd = new InterstitialAd(this);
+        interstitialAd.setAdUnitId("ca-app-pub-6002058442934755/6779659716");
+        interstitialAd.loadAd(new AdRequest.Builder().build());
+
+        MobileAds.initialize(this, initializationStatus -> {
+        });*/
     }
+
+    /*private void showInterstitial(){
+        if (interstitialAd.isLoaded()){
+            interstitialAd.show();
+            interstitialAd.loadAd(new AdRequest.Builder().build());
+        }
+
+        interstitialAd.setAdListener(new AdListener(){
+            @Override
+            public void onAdClosed() {
+                super.onAdClosed();
+                interstitialAd.loadAd(new AdRequest.Builder().build());
+            }
+
+            @Override
+            public void onAdOpened() {
+                super.onAdOpened();
+            }
+
+            @Override
+            public void onAdLoaded() {
+                super.onAdLoaded();
+            }
+        });
+    }
+    */
 
     //une permet qui permet d'inflater les view
     //utiliser pour rendre moins longue la méthodes create
@@ -141,7 +174,7 @@ public class DetailContaminatedActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
 
                     //si la requete a réussie
-                    Log.d(Final.TAG, "onResponse: " + translatedName);
+                    //Log.d(Final.TAG, "onResponse: " + translatedName);
                     try {
                         assert response.body() != null;
                         String message = response.body().string();
@@ -164,14 +197,14 @@ public class DetailContaminatedActivity extends AppCompatActivity {
                             recoveredGraph.getGridLabelRenderer().setHumanRounding(false);
                         }
                     } catch (IOException e) {
-                        Log.d(Final.TAG, "onError: ", e);
+                        //Log.d(Final.TAG, "onError: ", e);
                     }
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
-                Log.d(Final.TAG, "onFailure: ", t);
+                //Log.d(Final.TAG, "onFailure: ", t);
             }
         });
     }
@@ -184,7 +217,7 @@ public class DetailContaminatedActivity extends AppCompatActivity {
             @Override
             public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
                 if (response.isSuccessful()) {
-                    Log.d(Final.TAG, "onResponse: " + translatedName);
+                    //Log.d(Final.TAG, "onResponse: " + translatedName);
                     try {
                         assert response.body() != null;
                         String source = response.body().string();
@@ -206,7 +239,7 @@ public class DetailContaminatedActivity extends AppCompatActivity {
                             deathGraph.getGridLabelRenderer().setHumanRounding(false);
                         }
                     } catch (IOException e) {
-                        Log.d(Final.TAG, "ERROT 1: ");
+                        //Log.d(Final.TAG, "ERROT 1: ");
                         e.printStackTrace();
                     }
                 }
@@ -228,7 +261,7 @@ public class DetailContaminatedActivity extends AppCompatActivity {
             @Override
             public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
                 if (response.isSuccessful()) {
-                    Log.d(Final.TAG, "onResponse: " + translatedName);
+                    //Log.d(Final.TAG, "onResponse: " + translatedName);
                     try {
                         assert response.body() != null;
                         String source = response.body().string();
@@ -250,7 +283,7 @@ public class DetailContaminatedActivity extends AppCompatActivity {
                         }
 
                     } catch (IOException e) {
-                        Log.d(Final.TAG, "ERROT 1: ");
+                        //Log.d(Final.TAG, "ERROT 1: ");
                     }
                 }
             }
@@ -261,4 +294,19 @@ public class DetailContaminatedActivity extends AppCompatActivity {
             }
         });
     }
+
+
+    /*@Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        //getMenuInflater().inflate(R.menu.detail_contaminated_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.action_ads_dowload){
+            showInterstitial();
+        }
+        return super.onOptionsItemSelected(item);
+    }*/
 }

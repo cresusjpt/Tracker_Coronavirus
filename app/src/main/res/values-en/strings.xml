@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Tracker</string>
+    <string name="title_home">In the world</string>
+    <string name="title_notifications">Settings</string>
+    <string name="title_activity_tracker">Tracker</string>
+    <string name="view_department">By department</string>
+    <string name="view_region">By region</string>
+    <string name="action_search">Search</string>
+    <string name="infections">Infections</string>
+    <string name="death">Deaths</string>
+    <string name="heal">Heal</string>
+    <string name="pull_me_up">Situation in the world</string>
+    <string name="provided_data">Data provided by :</string>
+    <string name="title_activity_settings">Setting</string>
+    <string name="messages_header">Messages</string>
+    <string name="count_country">Number of contaminated countries: : %1$s</string>
+    <string name="data_update">Data updated on %1$s</string>
+    <string name="sync_header">Notifications</string>
+    <string name="signature_title">Your signature</string>
+    <string name="reply_title">Action</string>
+    <string name="sync_title">Notify me when new data is available</string>
+    <string name="attachment_title">Download attachments</string>
+    <string name="enable_notification">Active notifications</string>
+    <string name="others">Other</string>
+    <string name="change_language">Change language</string>
+    <string name="about">About</string>
+    <string name="data_source">Data source</string>
+    <string name="title_activity_detail_contaminated">Detail</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+    <string name="title_dashboard">Infected countries</string>
+    <string name="attachment_summary_on">Automatically download attachments for incoming mails</string>
+    <string name="data_source_summary">List of data sources</string>
+    <string name="action_filter">Filtrer</string>
+    <string name="list_data_source">List of data sources</string>
+    <string name="what_is">What\'s Covid-19</string>
+    <string name="covid_prevent">Prevention and Other Information</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="ok">OK</string>
+    <string name="about_message">"Application developed by Jeanpaul Tossou to facilitate the consultation of cases around the world.<b>Email : tossoujeanpaul641@gmail.com</b>"</string>
+    <string name="connection_error">An error has occurred. Please try again later.</string>
+</resources>

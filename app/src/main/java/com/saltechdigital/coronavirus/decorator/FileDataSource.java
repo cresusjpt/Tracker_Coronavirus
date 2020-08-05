@@ -38,7 +38,7 @@ public class FileDataSource implements DataSource {
         try {
             this.writeData("source");
         } catch (IOException e) {
-            Log.d(Final.TAG, "FileDataSource -> une erreur est survenue: ", e);
+            //Log.d(Final.TAG, "FileDataSource -> une erreur est survenue: ", e);
         }
         return null;
     }

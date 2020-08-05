@@ -5,7 +5,6 @@ import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -25,7 +24,9 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.UiSettings;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.TileOverlayOptions;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.maps.android.data.geojson.GeoJsonLayer;
@@ -35,8 +36,8 @@ import com.google.maps.android.heatmaps.HeatmapTileProvider;
 import com.google.maps.android.heatmaps.WeightedLatLng;
 import com.saltechdigital.coronavirus.MainActivity;
 import com.saltechdigital.coronavirus.R;
-import com.saltechdigital.coronavirus.models.ContaminatedCountry;
 import com.saltechdigital.coronavirus.factory.CountryFactory;
+import com.saltechdigital.coronavirus.models.ContaminatedCountry;
 import com.saltechdigital.coronavirus.models.HeatMapCountry;
 import com.saltechdigital.coronavirus.network.Tracker;
 import com.saltechdigital.coronavirus.network.TrackerService;
@@ -84,10 +85,10 @@ public class InWorldFragment extends Fragment implements OnMapReadyCallback {
     int[] colors = {
             Color.GREEN,    // green(0-50)
             Color.YELLOW,    // yellow(51-100)
-            Color.rgb(255,165,0), //Orange(101-150)
+            Color.rgb(255, 165, 0), //Orange(101-150)
             Color.RED,              //red(151-200)
-            Color.rgb(153,50,204), //dark orchid(201-300)
-            Color.rgb(165,42,42) //brown(301-500)
+            Color.rgb(153, 50, 204), //dark orchid(201-300)
+            Color.rgb(165, 42, 42) //brown(301-500)
     };
 
     float[] startpoints = {
@@ -156,7 +157,7 @@ public class InWorldFragment extends Fragment implements OnMapReadyCallback {
                 public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
                     if (response.isSuccessful()) {
                         try {
-                            Log.d(Final.TAG, "onResponse: success");
+                            //Log.d(Final.TAG, "onResponse: success");
                             String data = Objects.requireNonNull(response.body()).string();
                             JSONObject jsonObject = new JSONObject(data);
                             JSONArray jsonArray = jsonObject.getJSONArray("GlobalData");
@@ -170,7 +171,7 @@ public class InWorldFragment extends Fragment implements OnMapReadyCallback {
                             int recoved = object.optInt("Guerisons");
 
                             //Utilisation du patron de conception factory
-                            CountryFactory factory = new CountryFactory(name,date,infed,dead,recoved);
+                            CountryFactory factory = new CountryFactory(name, date, infed, dead, recoved);
 
                             country = (ContaminatedCountry) factory.getCountry(Final.CONTAMINATED);
 
@@ -191,14 +192,14 @@ public class InWorldFragment extends Fragment implements OnMapReadyCallback {
                             MainActivity.jsonObject = jsonObject;
                             MainActivity.contaminatedCountries = countries;
                         } catch (JSONException | IOException e) {
-                            Log.d(Final.TAG, "onResponse: ",e);
+                            //Log.d(Final.TAG, "onResponse: ", e);
                         }
                     }
                 }
 
                 @Override
                 public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
-                    Log.e(Final.TAG, "onFailure: " + t.getMessage(), t);
+                    //Log.e(Final.TAG, "onFailure: " + t.getMessage(), t);
                 }
             });
         }
@@ -214,7 +215,7 @@ public class InWorldFragment extends Fragment implements OnMapReadyCallback {
         }
         context = getContext();
         tracker = TrackerService.createService(Tracker.GITHUB_ENDPOINT, getContext());
-        bottomLinear = Objects.requireNonNull(getActivity()).findViewById(R.id.bottom_sheet);
+        bottomLinear = requireActivity().findViewById(R.id.bottom_sheet);
 
         infected = getActivity().findViewById(R.id.tv_infected);
         death = getActivity().findViewById(R.id.tv_death);
@@ -249,7 +250,7 @@ public class InWorldFragment extends Fragment implements OnMapReadyCallback {
                     try {
                         assert response.body() != null;
                         message = response.body().string();
-                        //Log.d(Final.TAG, "TAGE: "+message);
+                        //Log.d(Final.TAG, "TAGE: " + message);
 
                         File outputDir = context.getCacheDir();
                         File outputFile = File.createTempFile(finalYesterday, "json", outputDir);
@@ -267,35 +268,42 @@ public class InWorldFragment extends Fragment implements OnMapReadyCallback {
                             for (int j = 1; j < csv.size(); j++) {
                                 String[] data = (String[]) csv.get(j);
                                 //FIPS 0,Admin2 1,Province_State 2,Country_Region 3,Last_Update 4,Lat 5,Long_ 6,Confirmed 7,Deaths 8,Recovered 9,Active 10,Combined_Key
-                                CountryFactory factory = new CountryFactory(data[3],data[4],Integer.parseInt(data[7]),Integer.parseInt(data[8]),Integer.parseInt(data[9]));
-
+                                CountryFactory factory = new CountryFactory(data[3], data[4], Integer.parseInt(data[7]), Integer.parseInt(data[8]), Integer.parseInt(data[9]));
                                 HeatMapCountry heatMapCountry = (HeatMapCountry) factory.getCountry(Final.HEAT);
                                 heatMapCountry.setStateName(data[2]);
-                                LatLng latLng = new LatLng(Double.parseDouble(data[5]), Double.parseDouble(data[6]));
-                                heatMapCountry.setLatLng(latLng);
-                                latLngList.add(latLng);
-                                //mMap.addMarker(new MarkerOptions().position(latLng).title(country.getName()));
-                                heatMapCountries.add(heatMapCountry);
-                                int infe = heatMapCountry.getConfirmed();
-                                if (infe <= 50) {
-                                    WeightedLatLng wl = new WeightedLatLng(latLng, 1.2d);
-                                    weightedLatLng.add(wl);
-                                } else if (infe <= 100) {
-                                    WeightedLatLng wl = new WeightedLatLng(latLng, 1.4d);
-                                    weightedLatLng.add(wl);
-                                } else if (infe <= 150) {
-                                    WeightedLatLng wl = new WeightedLatLng(latLng, 1.6d);
-                                    weightedLatLng.add(wl);
-                                } else if (infe <= 200) {
-                                    WeightedLatLng wl = new WeightedLatLng(latLng, 1.8d);
-                                    weightedLatLng.add(wl);
-                                } else if (infe <= 250) {
-                                    WeightedLatLng wl = new WeightedLatLng(latLng, 2);
-                                    weightedLatLng.add(wl);
+                                if (!data[5].equals("") && !data[6].equals("")) {
+                                    double lat = Double.parseDouble(data[5]);
+                                    double lon = Double.parseDouble(data[6]);
+                                    //Log.d(Final.TAG, "latitiude: " + lat + " longitude : " + lon);
+                                    LatLng latLng = new LatLng(lat, lon);
+                                    heatMapCountry.setLatLng(latLng);
+                                    latLngList.add(latLng);
+                                    MarkerOptions marker = new MarkerOptions().position(latLng).title(country.getName());
+                                    marker.icon(BitmapDescriptorFactory.fromResource(R.drawable.covid));
+                                    mMap.addMarker(marker);
+                                    heatMapCountries.add(heatMapCountry);
+
+                                    int infe = heatMapCountry.getConfirmed();
+                                    if (infe <= 50) {
+                                        WeightedLatLng wl = new WeightedLatLng(latLng, 1.2d);
+                                        weightedLatLng.add(wl);
+                                    } else if (infe <= 100) {
+                                        WeightedLatLng wl = new WeightedLatLng(latLng, 1.4d);
+                                        weightedLatLng.add(wl);
+                                    } else if (infe <= 150) {
+                                        WeightedLatLng wl = new WeightedLatLng(latLng, 1.6d);
+                                        weightedLatLng.add(wl);
+                                    } else if (infe <= 200) {
+                                        WeightedLatLng wl = new WeightedLatLng(latLng, 1.8d);
+                                        weightedLatLng.add(wl);
+                                    } else if (infe <= 250) {
+                                        WeightedLatLng wl = new WeightedLatLng(latLng, 2);
+                                        weightedLatLng.add(wl);
+                                    }
                                 }
                             }
-                            Log.d(Final.TAG, "latlnglist size: " + latLngList.size());
-                            Gradient gradient = new Gradient(colors,startpoints);
+                            //Log.d(Final.TAG, "latlnglist size: " + latLngList.size());
+                            Gradient gradient = new Gradient(colors, startpoints);
                             provider = new HeatmapTileProvider
                                     .Builder()
                                     .data(latLngList)
@@ -304,7 +312,8 @@ public class InWorldFragment extends Fragment implements OnMapReadyCallback {
                                     .radius(45)
                                     .build();
                             if (provider != null) {
-                                /*TileOverlay tileOverlay =*/ mMap.addTileOverlay(new TileOverlayOptions().tileProvider(provider));
+                                /*TileOverlay tileOverlay =*/
+                                mMap.addTileOverlay(new TileOverlayOptions().tileProvider(provider));
                             }
                         }
                     } catch (IOException e) {
@@ -314,8 +323,8 @@ public class InWorldFragment extends Fragment implements OnMapReadyCallback {
             }
 
             @Override
-            public void onFailure(@NonNull Call<ResponseBody> call,@NonNull Throwable t) {
-                Log.d(Final.TAG, "onFailure:heatmap " + t.getMessage());
+            public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
+                //Log.d(Final.TAG, "onFailure:heatmap " + t.getMessage());
             }
         });
     }
@@ -349,7 +358,7 @@ public class InWorldFragment extends Fragment implements OnMapReadyCallback {
             geoJsonLayer.addLayerToMap();
 
         } catch (IOException e) {
-            Log.d(Final.TAG,"onMapReady: ", e);
+            //Log.d(Final.TAG, "onMapReady: ", e);
             e.printStackTrace();
         } catch (JSONException e) {
             e.printStackTrace();

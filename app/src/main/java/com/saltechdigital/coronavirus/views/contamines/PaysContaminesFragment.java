@@ -1,8 +1,8 @@
 package com.saltechdigital.coronavirus.views.contamines;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -19,6 +19,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.ads.MobileAds;
 import com.saltechdigital.coronavirus.MainActivity;
 import com.saltechdigital.coronavirus.R;
 import com.saltechdigital.coronavirus.adapter.CountryListAdapter;
@@ -26,6 +30,8 @@ import com.saltechdigital.coronavirus.models.ContaminatedCountry;
 import com.saltechdigital.coronavirus.network.Tracker;
 import com.saltechdigital.coronavirus.network.TrackerService;
 import com.saltechdigital.coronavirus.utils.Final;
+import com.saltechdigital.coronavirus.utils.ReadAndWrite;
+import com.saltechdigital.coronavirus.views.detail.DetailContaminatedActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -47,6 +53,9 @@ public class PaysContaminesFragment extends Fragment {
     private RecyclerView recyclerView;
     private SwipeRefreshLayout swipeRefreshLayout;
     private CountryListAdapter adapter;
+    private ContaminatedCountry cctryy;
+
+    private InterstitialAd interstitialAd;
 
     private String data;
 
@@ -66,14 +75,85 @@ public class PaysContaminesFragment extends Fragment {
         swipeRefreshLayout = activity.findViewById(R.id.swiperefresh);
         swipeRefreshLayout.setOnRefreshListener(this::refresh);
         refresh();
+
+        interstitialAd = new InterstitialAd(requireActivity());
+        interstitialAd.setAdUnitId("ca-app-pub-6002058442934755/6779659716");
+        interstitialAd.loadAd(new AdRequest.Builder().build());
+
+        MobileAds.initialize(requireActivity(), initializationStatus -> {
+        });
+    }
+
+    private void showInterstitial(ContaminatedCountry country) {
+        if (interstitialAd.isLoaded()) {
+            interstitialAd.show();
+            interstitialAd.loadAd(new AdRequest.Builder().build());
+        } else {
+            Intent intent = new Intent(getContext(), DetailContaminatedActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_HISTORY);
+            intent.putExtra(CountryListAdapter.EXTRA_CONTAMINED, country);
+            startActivity(intent);
+        }
+
+        interstitialAd.setAdListener(new AdListener() {
+            @Override
+            public void onAdClosed() {
+                super.onAdClosed();
+                interstitialAd.loadAd(new AdRequest.Builder().build());
+                Intent intent = new Intent(getContext(), DetailContaminatedActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_HISTORY);
+                intent.putExtra(CountryListAdapter.EXTRA_CONTAMINED, country);
+                startActivity(intent);
+            }
+
+            @Override
+            public void onAdOpened() {
+                super.onAdOpened();
+            }
+
+            @Override
+            public void onAdLoaded() {
+                super.onAdLoaded();
+            }
+
+            @Override
+            public void onAdClicked() {
+                super.onAdClicked();
+            }
+
+            @Override
+            public void onAdImpression() {
+                super.onAdImpression();
+            }
+        });
     }
 
     //add the contaminated country into the list
     private void databind() {
         if (MainActivity.contaminatedCountries.size() != 0) {
             recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-            adapter = new CountryListAdapter(MainActivity.contaminatedCountries, getContext());
+            adapter = new CountryListAdapter(MainActivity.contaminatedCountries, getContext(), country -> {
+                cctryy = country;
+                showInterstitial(country);
+            });
             recyclerView.setAdapter(adapter);
+        }
+    }
+
+    private void bindSaveData(){
+        try {
+            String data = ReadAndWrite.readFromFile(requireContext(),Final.FILENAME);
+            if (!data.equals("")){
+                JSONObject jsonObject = new JSONObject(data);
+                JSONArray jsonArray = jsonObject.getJSONArray("PaysData");
+                ReadAndWrite.writeToFile(data,requireContext(),Final.FILENAME);
+                List<ContaminatedCountry> countries = ContaminatedCountry.populate(jsonArray);
+                MainActivity.jsonObject = jsonObject;
+                MainActivity.contaminatedCountries = countries;
+                databind();
+            }
+        } catch (JSONException | IOException ex) {
+            ex.printStackTrace();
         }
     }
 
@@ -83,31 +163,36 @@ public class PaysContaminesFragment extends Fragment {
         Call<ResponseBody> call = tracker.downloadFileWithFixedUrl();
         call.enqueue(new Callback<ResponseBody>() {
             @Override
-            public void onResponse(@NonNull  Call<ResponseBody> call,@NonNull Response<ResponseBody> response) {
+            public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
                 if (response.isSuccessful()) {
                     try {
                         data = Objects.requireNonNull(response.body()).string();
-                        Log.d(Final.TAG, "first data: "+data);
                         JSONObject jsonObject = new JSONObject(data);
                         JSONArray jsonArray = jsonObject.getJSONArray("PaysData");
+                        ReadAndWrite.writeToFile(data,requireContext(),Final.FILENAME);
                         List<ContaminatedCountry> countries = ContaminatedCountry.populate(jsonArray);
-                        MainActivity.jsonObject = jsonObject;
-                        MainActivity.contaminatedCountries = countries;
-                        databind();
+                        if (countries.size() == 0){
+                            bindSaveData();
+                        }else {
+                            MainActivity.jsonObject = jsonObject;
+                            MainActivity.contaminatedCountries = countries;
+                            databind();
+                        }
                     } catch (JSONException | IOException e) {
+                        bindSaveData();
                         e.printStackTrace();
                     }
                     //refresh the swipe refresh layout
                     swipeRefreshLayout.setRefreshing(false);
                 } else {
-                    Log.d(Final.TAG, "error: " + response.errorBody());
+                    bindSaveData();
                 }
                 swipeRefreshLayout.setRefreshing(false);
             }
 
             @Override
-            public void onFailure(@NonNull Call<ResponseBody> call,@NonNull Throwable t) {
-                Log.e(Final.TAG, "onFailure: " + t.getMessage(), t);
+            public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
+                bindSaveData();
                 Toast.makeText(getContext(), "UNE ERREUR", Toast.LENGTH_SHORT).show();
                 swipeRefreshLayout.setRefreshing(false);
             }

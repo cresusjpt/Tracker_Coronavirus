@@ -28,25 +28,21 @@ public class TrackerService {
 
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
                 //.retryOnConnectionFailure(true)
-                .addInterceptor(interceptor)
-                .readTimeout(120, TimeUnit.SECONDS)
-                .connectTimeout(120, TimeUnit.SECONDS)
+                //.addInterceptor(interceptor)
+                .readTimeout(60, TimeUnit.SECONDS)
+                .connectTimeout(60, TimeUnit.SECONDS)
                 .addInterceptor(chain -> {
                     Request request = chain.request();
                     Request.Builder builder = request.newBuilder().header("Accept", "application/json");
                     Request newRequest = builder.build();
-
                     return chain.proceed(newRequest);
                 }).addInterceptor(chain -> {
                     Request request = chain.request();
-
                     Request.Builder builder = request.newBuilder().header("Content-Type", "application/json; charset=utf-8");
                     Request newRequest = builder.build();
-
                     return chain.proceed(newRequest);
                 })
                 .build();
-
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(endpoint)

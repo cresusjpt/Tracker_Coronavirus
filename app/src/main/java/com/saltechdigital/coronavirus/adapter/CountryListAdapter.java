@@ -1,7 +1,6 @@
 package com.saltechdigital.coronavirus.adapter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,7 +14,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.saltechdigital.coronavirus.views.detail.DetailContaminatedActivity;
 import com.saltechdigital.coronavirus.R;
 import com.saltechdigital.coronavirus.models.ContaminatedCountry;
 import com.saltechdigital.coronavirus.utils.Final;
@@ -30,14 +28,20 @@ public class CountryListAdapter extends RecyclerView.Adapter<CountryListAdapter.
 
     private List<ContaminatedCountry> contaminatedCountries;
     private List<ContaminatedCountry> contaminatedCountriesFiltered;
+    private Listener listener;
     private Context context;
     public static final String EXTRA_CONTAMINED = "EXTRA_CONTAMINED";
     public static final String EXTRA_JSON_ARRAY = "jsonarray";
 
-    public CountryListAdapter(List<ContaminatedCountry> contaminatedCountries, Context context) {
+    public CountryListAdapter(List<ContaminatedCountry> contaminatedCountries, Context context, Listener listener) {
         this.contaminatedCountries = contaminatedCountries;
         this.contaminatedCountriesFiltered = contaminatedCountries;
         this.context = context;
+        this.listener = listener;
+    }
+
+    public interface Listener{
+        void onSuccess(ContaminatedCountry country);
     }
 
     @NonNull
@@ -85,6 +89,7 @@ public class CountryListAdapter extends RecyclerView.Adapter<CountryListAdapter.
                     List<ContaminatedCountry> filteredList = new ArrayList<>();
                     for (ContaminatedCountry contamined : contaminatedCountries) {
 
+                        //search replacing special character ex: Bénin = benin
                         charString = Normalizer.normalize(charString.trim(), Normalizer.Form.NFD);
                         charString = charString.replaceAll("[^\\p{ASCII}]", "");
 
@@ -92,7 +97,7 @@ public class CountryListAdapter extends RecyclerView.Adapter<CountryListAdapter.
                         name = name.replaceAll("[^\\p{ASCII}]", "");
 
                         if (name.toLowerCase().contains(charString.toLowerCase())) {
-                            Log.d(Final.TAG, "search: " + charString.toLowerCase() + " name : " + name);
+                            ////Log.d(Final.TAG, "search: " + charString.toLowerCase() + " name : " + name);
                             //Toast.makeText(context, "Find", Toast.LENGTH_SHORT).show();
                             filteredList.add(contamined);
                         }
@@ -108,7 +113,7 @@ public class CountryListAdapter extends RecyclerView.Adapter<CountryListAdapter.
 
             @Override
             protected void publishResults(CharSequence constraint, FilterResults results) {
-                Log.d(Final.TAG, "publishResults: ");
+                ////Log.d(Final.TAG, "publishResults: ");
                 contaminatedCountriesFiltered = (List<ContaminatedCountry>) results.values;
                 notifyDataSetChanged();
             }
@@ -132,9 +137,7 @@ public class CountryListAdapter extends RecyclerView.Adapter<CountryListAdapter.
             infection = itemView.findViewById(R.id.infection);
 
             itemView.setOnClickListener(v -> {
-                Intent intent = new Intent(context, DetailContaminatedActivity.class);
-                intent.putExtra(CountryListAdapter.EXTRA_CONTAMINED, current);
-                context.startActivity(intent);
+                listener.onSuccess(current);
             });
         }
 

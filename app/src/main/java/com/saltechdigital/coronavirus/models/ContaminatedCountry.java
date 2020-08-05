@@ -59,7 +59,7 @@ public class ContaminatedCountry implements Country, Parcelable, Comparable<Cont
 
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject object = jsonArray.optJSONObject(i);
-            Log.d(Final.TAG, "forStat: beurk");
+            //Log.d(Final.TAG, "forStat: beurk");
             if (object.has("Pays") && object.optString("Pays").equals(country.getName())) {
                 CountryFactory factory = new CountryFactory(object.optString("Pays"),object.optString("Date"),object.optInt("Infection"),object.optInt("Deces"),object.optInt("Guerisons"));
                 ContaminatedCountry cc = (ContaminatedCountry) factory.getCountry(Final.CONTAMINATED);
@@ -76,23 +76,24 @@ public class ContaminatedCountry implements Country, Parcelable, Comparable<Cont
     public static List<ContaminatedCountry> populate(JSONArray jsonArray) {
         List<ContaminatedCountry> countries = new ArrayList<>();
         for (int i = 0; i < jsonArray.length(); i++) {
-
             JSONObject object = jsonArray.optJSONObject(i);
             if (object.has("Date") && object.optString("Date").contains(MainActivity.dataTodayDate)) {
+                Log.d("JEANPAUL", "TODAY: "+MainActivity.dataTodayDate+" date :"+object.optString("Date"));
                 CountryFactory factory = new CountryFactory(object.optString("Pays"),object.optString("Date"),object.optInt("Infection"),object.optInt("Deces"),object.optInt("Guerisons"));
                 ContaminatedCountry country = (ContaminatedCountry) factory.getCountry(Final.CONTAMINATED);
                 country.setDeathRate(object.optDouble("TauxDeces"));
                 country.setHealingRate(object.optDouble("TauxGuerison"));
                 country.setInfectionRate(object.optDouble("TauxInfection"));
                 countries.add(country);
-            } else if (object.has("Date") && object.optString("Date").contains(MainActivity.dataYesterdayDate)) {
+            } /*else if (object.has("Date") && object.optString("Date").contains(MainActivity.dataYesterdayDate)) {
+                Log.d("JEANPAUL", "YESTERDAY: "+MainActivity.dataYesterdayDate+" date :"+object.optString("Date"));
                 CountryFactory factory = new CountryFactory(object.optString("Pays"),object.optString("Date"),object.optInt("Infection"),object.optInt("Deces"),object.optInt("Guerisons"));
                 ContaminatedCountry country = (ContaminatedCountry) factory.getCountry(Final.CONTAMINATED);
                 country.setDeathRate(object.optDouble("TauxDeces"));
                 country.setHealingRate(object.optDouble("TauxGuerison"));
                 country.setInfectionRate(object.optDouble("TauxInfection"));
                 countries.add(country);
-            }
+            }*/
         }
         return countries;
     }

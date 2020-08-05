@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">Tracker</string>
     <string name="title_home">Dans le monde</string>
-    <string name="title_dashboard">Pays contaminés</string>
     <string name="title_notifications">Paramètres</string>
+    <string name="title_dashboard">Pays contaminés</string>
     <string name="title_activity_tracker">Tracker</string>
     <string name="view_department">Vue par departement</string>
     <string name="view_region">Vue par région</string>
@@ -16,9 +16,7 @@
 
     <!-- Preference Titles -->
     <string name="messages_header">Messages</string>
-    <string name="count_country">Nombre de pays contaminés : %1$s</string>
     <string name="data_update">Données mis à jour le %1$s</string>
-    <string name="sync_header">Notifications</string>
 
     <!-- Messages Preferences -->
     <string name="signature_title">Votre signature</string>
@@ -27,8 +25,7 @@
     <!-- Sync Preferences -->
     <string name="sync_title">Me notifier quand de nouvelles données sont disponibles</string>
     <string name="attachment_title">Télécharger les pièces jointes</string>
-    <string name="attachment_summary_on">Télécharger automatiquement les pièces jointes pour les mails reçus</string>
-    <string name="attachment_summary_off">Téléchargement manuelle uniquement</string>
+    <string name="attachment_summary_off" translatable="false">Téléchargement manuelle uniquement</string>
     <string name="enable_notification">Activer les notifications</string>
     <string name="others">Autres</string>
     <string name="change_language">Changer de langue</string>
@@ -38,36 +35,35 @@
         <item>Johns Hopkins University CSSE</item>
         <item>Open Data (France)</item>
     </string-array>
-    <string name="hopkins">Johns Hopkins University CSSE</string>
-    <string name="coronavirus_definition">https://fr.wikipedia.org/wiki/Coronavirus</string>
-    <string name="hopkins_link">https://gisanddata.maps.arcgis.com/apps/opsdashboard/index.html#/bda7594740fd40299423467b48e9ecf6</string>
-    <string name="open_data">Open Data (France)</string>
-    <string name="open_data_link">Open Data (France)</string>
+    <string name="hopkins" translatable="false">Johns Hopkins University CSSE</string>
+    <string name="coronavirus_definition" translatable="false">https://fr.wikipedia.org/wiki/Coronavirus</string>
+    <string name="hopkins_link" translatable="false">https://gisanddata.maps.arcgis.com/apps/opsdashboard/index.html#/bda7594740fd40299423467b48e9ecf6</string>
+    <string name="open_data" translatable="false">Open Data (France)</string>
+    <string name="open_data_link" translatable="false">Open Data (France)</string>
     <string name="data_source_summary">Liste des sources de données</string>
-    <string name="action_filter">Filter</string>
+    <string name="action_filter">Filtrer</string>
     <string name="list_data_source">Liste des sources de données</string>
-    <string name="pref_key_datasource">pref_key_datasource</string>
+    <string name="pref_key_datasource" translatable="false">pref_key_datasource</string>
     <string name="what_is">C\'est quoi le Covid-19</string>
-    <string name="corona_virus_definition">virus_definition</string>
+    <string name="corona_virus_definition" translatable="false">virus_definition</string>
     <string name="covid_prevent">Prévention et Autres informations</string>
-    <string name="coronavirus_prevention">https://www.gouvernement.fr/info-coronavirus</string>
+    <string name="coronavirus_prevention" translatable="false">https://www.gouvernement.fr/info-coronavirus</string>
     <!--<string name="coronavirus_prevention">https://solidarites-sante.gouv.fr/soins-et-maladies/maladies/maladies-infectieuses/coronavirus/coronavirus-questions-reponses</string>-->
-    <string name="about_message">
-        Par Jeanpaul Tossou pour faciliter la consultation des cas dans le monde.
-        <b>
-            Email : tossoujeanpaul641@gmail.com
-        </b>
-    </string>
+    <string name="about_message">"Application développée par Jeanpaul Tossou pour faciliter la consultation des cas dans le monde.<b>Email : tossoujeanpaul641@gmail.com</b>"</string>
     <string name="ok">OK</string>
     <string name="connection_error">Une erreur s\'est produite. Veuillez réessayez ultérieurement.</string>
-    <string name="data_source_open">https://www.data.gouv.fr/fr/datasets/cas-confirmes-dinfection-au-covid-19-par-region/#_</string>
+    <string name="data_source_open" translatable="false">https://www.data.gouv.fr/fr/datasets/cas-confirmes-dinfection-au-covid-19-par-region/#_</string>
     <string name="title_activity_detail_contaminated">Detail</string>
     <!-- Strings used for fragments for navigation -->
-    <string name="first_fragment_label">First Fragment</string>
+    <string name="first_fragment_label" translatable="false">First Fragment</string>
     <string name="second_fragment_label">Second Fragment</string>
-    <string name="next">Next</string>
-    <string name="previous">Previous</string>
+    <string name="next">Suivant</string>
 
-    <string name="hello_first_fragment">Hello first fragment</string>
-    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="hello_first_fragment" translatable="false">Hello first fragment</string>
+    <string name="hello_second_fragment" translatable="false">Hello second fragment. Arg: %1$s</string>
+    <string name="action_ads" translatable="false">Charger publicité</string>
+    <string name="count_country">Nombre de pays contaminés : %1$s</string>
+    <string name="sync_header">Notifications</string>
+    <string name="previous">Précedent</string>
+    <string name="attachment_summary_on">Télécharger automatiquement les pièces jointes pour les mails reçus</string>
 </resources>

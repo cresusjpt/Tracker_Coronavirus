@@ -17,6 +17,11 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
+
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-6002058442934755~7239110123" />
+
         <activity
             android:name=".views.detail.DetailContaminatedActivity"
             android:label="@string/title_activity_detail_contaminated"
@@ -42,7 +47,8 @@
         -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyDfXDNawW89qJrxX3tHT7_aKHCpmRD3QQE" />
+            android:value="AIzaSyCtNW_Qbexx1L5IIL1AZTC6xZ4zCH46Vl8" />
+            <!--android:value="AIzaSyDfXDNawW89qJrxX3tHT7_aKHCpmRD3QQE" />-->
 
         <activity
             android:name=".MainActivity"
@@ -53,5 +59,4 @@
             </intent-filter>
         </activity>
     </application>
-
 </manifest>
